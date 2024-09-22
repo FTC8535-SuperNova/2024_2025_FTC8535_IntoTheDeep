@@ -1,3 +1,8 @@
+# FTC ignore files 
+build.gradle
+gradle.properties
+gradle/wrapper/gradle-wrapper.properties
+
 # Built application files
 *.apk
 *.aar
