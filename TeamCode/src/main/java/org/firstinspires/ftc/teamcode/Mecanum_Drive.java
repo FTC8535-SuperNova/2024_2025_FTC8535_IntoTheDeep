@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -59,12 +58,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip
  * the direction of all 4 motors (see code below).
  *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Use Android Studio to Copy ethis Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
-public class BasicOmniOpMode_Linear extends LinearOpMode {
+@TeleOp(name="Basic: Omni Mecanum Drive Linear OpMode", group="Linear OpMode")
+public class Mecanum_Drive extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -114,12 +113,31 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
 
+            boolean isFastMode = false;
+
+            if (gamepad1.a) {
+                isFastMode = true;
+            } else {
+                isFastMode = false;
+            }
+
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = axial + lateral + yaw;
-            double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
+            double leftFrontPower = 0;
+            double rightFrontPower = 0;
+            double leftBackPower = 0;
+            double rightBackPower = 0;
+            if (!isFastMode) {
+                leftFrontPower = axial + lateral + yaw;
+                rightFrontPower = axial - lateral - yaw;
+                leftBackPower = axial - lateral + yaw;
+                rightBackPower = axial + lateral - yaw;
+            } else {
+                leftFrontPower  = (axial + lateral + yaw)/4;
+                rightFrontPower = (axial - lateral - yaw)/4;
+                leftBackPower   = (axial - lateral + yaw)/4;
+                rightBackPower  = (axial + lateral - yaw)/4;
+            }
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
