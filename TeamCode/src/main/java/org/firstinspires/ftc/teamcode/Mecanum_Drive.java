@@ -115,7 +115,7 @@ public class Mecanum_Drive extends LinearOpMode {
 
             boolean isFastMode = false;
 
-            if (gamepad1.a) {
+            if (gamepad1.right_trigger == 1) {
                 isFastMode = true;
             } else {
                 isFastMode = false;
