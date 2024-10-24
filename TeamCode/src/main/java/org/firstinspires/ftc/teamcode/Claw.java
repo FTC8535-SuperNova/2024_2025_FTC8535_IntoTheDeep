@@ -19,9 +19,9 @@ public class Claw extends LinearOpMode {
         double pos = 1.0;
         while (opModeIsActive()) {
 
-            if (gamepad1.x) {
+            if (gamepad2.x) {
                 pos = 1.0;
-            } else if (gamepad1.y){
+            } else if (gamepad2.y){
                 pos = 0.75;
             }
 
