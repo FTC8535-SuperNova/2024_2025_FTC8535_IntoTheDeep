@@ -10,7 +10,7 @@ public class Sweeper extends LinearOpMode {
     private DcMotor Sweeper = null;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode(){
 
         //Connect variable to actual motor
         Sweeper = hardwareMap.get(DcMotor.class, "Sweeper");
