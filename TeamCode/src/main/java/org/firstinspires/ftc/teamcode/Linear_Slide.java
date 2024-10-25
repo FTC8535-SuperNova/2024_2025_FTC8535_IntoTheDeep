@@ -22,7 +22,7 @@ public class Linear_Slide extends LinearOpMode {
         while (opModeIsActive()) {
 
             //use gamepad2 to set power
-            double drive = -1 * gamepad2.right_stick_y;
+            double drive = 0.5 * gamepad2.right_stick_y;
 
             //set power to linear slide
             linear_slide.setPower(drive);

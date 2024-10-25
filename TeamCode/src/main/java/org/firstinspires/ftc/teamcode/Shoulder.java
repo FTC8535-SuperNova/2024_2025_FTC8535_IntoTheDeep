@@ -15,8 +15,8 @@ public class Shoulder extends LinearOpMode{
     @Override
     public void runOpMode() {
         //connect shoulder_motor variables to shoulder motors on robot
-        shoulder_motor_1 = hardwareMap.get(DcMotor.class, "Shoulder");
-        shoulder_motor_2 = hardwareMap.get(DcMotor.class, "shoulder");
+        shoulder_motor_1 = hardwareMap.get(DcMotor.class, "shoulder_left");
+        shoulder_motor_2 = hardwareMap.get(DcMotor.class, "shoulder_right");
 
         //set motor directions
         shoulder_motor_1.setDirection(DcMotor.Direction.FORWARD);

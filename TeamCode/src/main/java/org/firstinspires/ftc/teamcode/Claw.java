@@ -22,7 +22,7 @@ public class Claw extends LinearOpMode {
             if (gamepad2.x) {
                 pos = 1.0;
             } else if (gamepad2.y){
-                pos = 0.75;
+                pos = 0.5;
             }
 
             // Set position to servo
