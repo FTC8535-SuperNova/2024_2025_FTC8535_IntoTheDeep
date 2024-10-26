@@ -67,7 +67,7 @@ public class Main_Teleop extends LinearOpMode {
             //reading controller inputs
             double shoulder_drive = -1 * gamepad2.left_stick_y;
 
-            double climber_drive = -1 * gamepad2.right_trigger;
+            double climber_drive = gamepad2.right_trigger;
 
             double linear_slide_drive = 0.5 * gamepad2.right_stick_y;
 
