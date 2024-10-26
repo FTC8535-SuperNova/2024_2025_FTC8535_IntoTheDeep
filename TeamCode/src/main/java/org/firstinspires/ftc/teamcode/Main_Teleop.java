@@ -98,7 +98,7 @@ public class Main_Teleop extends LinearOpMode {
             double rightFrontPower = 0;
             double leftBackPower = 0;
             double rightBackPower = 0;
-            if (!isFastMode) {
+            if (isFastMode) {
                 leftFrontPower = axial + lateral + yaw;
                 rightFrontPower = axial - lateral - yaw;
                 leftBackPower = axial - lateral + yaw;
