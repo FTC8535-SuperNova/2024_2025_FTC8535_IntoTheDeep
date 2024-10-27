@@ -29,6 +29,12 @@ public class Shoulder extends LinearOpMode{
             //use gamepad2 to set power
             double drive = -1 * gamepad2.left_stick_y;
 
+            // slow down the desent of the arm
+            if (-1 * gamepad2.left_stick_y) < 0 {
+                drive /= 4
+            }
+
+
             //assign power to motors
             shoulder_motor_1.setPower(drive);
             shoulder_motor_2.setPower(drive);
