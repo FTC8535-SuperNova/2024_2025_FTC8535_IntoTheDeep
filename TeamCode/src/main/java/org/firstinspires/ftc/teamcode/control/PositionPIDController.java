@@ -8,15 +8,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class PositionPIDController {
 
-    public PositionPIDController(DcMotor motor) {
+    public PositionPIDController(DcMotor motor, double kp, double ki, double kd) {
         this.motor = motor;
+        this.Kp = kp;
+        this.Ki = ki;
+        this.Kd = kd;
     }
 
     DcMotor motor;
 
-    double Kp = 0.0005;
-    double Ki = 0.0001;
-    double Kd = 0.00001;
+    double Kp;
+    double Ki;
+    double Kd;
 
     double integralSum = 0;
 
