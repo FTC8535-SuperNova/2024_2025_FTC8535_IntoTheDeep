@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ArmController {
 
     final int SHOULDER_ENCODER_LIMIT = 1520;
-    final double SHOULDER_KP = 0.0005;
+    final double SHOULDER_KP = 0.002;
     final double SHOULDER_KI = 0.0001;
     final double SHOULDER_KD = 0.00001;
 
