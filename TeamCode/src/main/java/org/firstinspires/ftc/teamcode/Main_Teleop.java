@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.control.ArmController;
+
 @TeleOp
 public class Main_Teleop extends LinearOpMode {
 
@@ -19,13 +21,15 @@ public class Main_Teleop extends LinearOpMode {
 
     private DcMotor linear_slide = null;
 
-    private Servo Claw = null;
+    private Servo claw = null;
 
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
+
+    private final ArmController armController = new ArmController();
 
 
     @Override
@@ -36,30 +40,41 @@ public class Main_Teleop extends LinearOpMode {
         //set motor directions
         setMotorDirections();
 
+        armController.init(shoulder_motor_1, shoulder_motor_2, linear_slide);
 
         waitForStart();
 
         //set servo pos
-        double pos = 1.0;
+        double clawPos = 1.0;
+        double climberDrive;
         while (opModeIsActive()) {
 
             //reading controller inputs
-            double shoulder_drive = -1 * gamepad2.left_stick_y;
+            double shoulderCommand = -1 * gamepad2.left_stick_y;
+            double linearSlideCommand = -1 * gamepad2.right_stick_y;
+            telemetry.addData("Shoulder Cmd", shoulderCommand);
+            telemetry.addData("Lin Slide Cmd", linearSlideCommand);
+            armController.update(shoulderCommand, linearSlideCommand, telemetry);
 
-            double climber_drive = gamepad2.right_trigger;
 
-            double linear_slide_drive = 0.5 * gamepad2.right_stick_y;
+            if (gamepad2.right_trigger > 0) {
+                climberDrive = gamepad2.right_trigger;
+            } else if (gamepad2.left_trigger > 0) {
+                climberDrive = -gamepad2.left_trigger;
+            } else {
+                climberDrive = 0;
+            }
 
             if (gamepad2.x) {
-                pos = 1.0;
+                clawPos = 1.0;
             } else if (gamepad2.y){
-                pos = 0.5;
+                clawPos = 0.5;
             }
 
             WheelPower wheelPower = computeWheelPower();
 
             //assign power to motors
-            assignMotorPowers(shoulder_drive, climber_drive, linear_slide_drive, pos, wheelPower);
+            assignMotorPowers(climberDrive, clawPos, wheelPower);
 
             // Show the elapsed game time and wheel power.
             updateTelemetry(wheelPower);
@@ -69,21 +84,16 @@ public class Main_Teleop extends LinearOpMode {
     }
 
     private void updateTelemetry(WheelPower wheelPower) {
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", wheelPower.leftFrontPower, wheelPower.rightFrontPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", wheelPower.leftBackPower, wheelPower.rightBackPower);
         telemetry.update();
     }
 
-    private void assignMotorPowers(double shoulder_drive, double climber_drive, double linear_slide_drive, double pos, WheelPower wheelPower) {
-        shoulder_motor_1.setPower(shoulder_drive);
-        shoulder_motor_2.setPower(shoulder_drive);
-
+    private void assignMotorPowers(double climber_drive, double clawPos, WheelPower wheelPower) {
         climber.setPower(climber_drive);
 
-        linear_slide.setPower(linear_slide_drive);
-
-        Claw.setPosition(pos);
+        claw.setPosition(clawPos);
 
         leftFrontDrive.setPower(wheelPower.leftFrontPower);
         rightFrontDrive.setPower(wheelPower.rightFrontPower);
@@ -100,20 +110,18 @@ public class Main_Teleop extends LinearOpMode {
         double lateral =  gamepad1.right_stick_x;
         double yaw     =  gamepad1.left_stick_x;
 
-        boolean isFastMode = false;
+        boolean isFastMode;
 
-        if (gamepad1.right_trigger == 1) {
-            isFastMode = true;
-        } else {
-            isFastMode = false;
-        }
+        isFastMode = (gamepad1.right_trigger == 1);
 
-        // Combine the joystick requests for each axis-motion to determine each wheel's power.
-        // Set up a variable for each drive wheel to save the power level for telemetry.
-        double leftFrontPower = 0;
-        double rightFrontPower = 0;
-        double leftBackPower = 0;
-        double rightBackPower = 0;
+        /*
+         Combine the joystick requests for each axis-motion to determine each wheel's power.
+         Set up a variable for each drive wheel to save the power level for telemetry.
+        */
+        double leftFrontPower;
+        double rightFrontPower;
+        double leftBackPower;
+        double rightBackPower;
         if (isFastMode) {
             leftFrontPower = axial + lateral + yaw;
             rightFrontPower = axial - lateral - yaw;
@@ -138,8 +146,7 @@ public class Main_Teleop extends LinearOpMode {
             leftBackPower   /= max;
             rightBackPower  /= max;
         }
-        WheelPower wheelPower = new WheelPower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
-        return wheelPower;
+        return new WheelPower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
     }
 
     private static class WheelPower {
@@ -157,28 +164,35 @@ public class Main_Teleop extends LinearOpMode {
     }
 
     private void setMotorDirections() {
-        shoulder_motor_1.setDirection(DcMotor.Direction.FORWARD);
-        shoulder_motor_2.setDirection(DcMotor.Direction.REVERSE);
-
         climber.setDirection(DcMotor.Direction.FORWARD);
-
-        linear_slide.setDirection(DcMotor.Direction.FORWARD);
+        climber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        climber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void connectMotorsToHub() {
         shoulder_motor_1 = hardwareMap.get(DcMotor.class, "shoulder_left");
         shoulder_motor_2 = hardwareMap.get(DcMotor.class, "shoulder_right");
 
-        climber = hardwareMap.get(DcMotor.class, "Climber");
+        climber = hardwareMap.get(DcMotor.class, "climber");
 
-        linear_slide = hardwareMap.get(DcMotor.class, "Linear_slide");
+        linear_slide = hardwareMap.get(DcMotor.class, "linear_slide");
 
-        Claw = hardwareMap.get(Servo.class, "Claw");
+        claw = hardwareMap.get(Servo.class, "claw");
 
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
