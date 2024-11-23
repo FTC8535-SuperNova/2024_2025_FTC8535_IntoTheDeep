@@ -71,6 +71,10 @@ public class Main_Teleop extends LinearOpMode {
                 clawPos = 0.5;
             }
 
+            if (gamepad2.a) {
+                armController.ZeroLSEncoders();
+            }
+
             WheelPower wheelPower = computeWheelPower();
 
             //assign power to motors
