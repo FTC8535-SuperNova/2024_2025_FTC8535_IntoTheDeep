@@ -94,7 +94,7 @@ public class ArmController {
     }
 
     public void ZeroLSEncoders() {
-        linear_slide_motor.setMode(DcMotor.RunMode(STOP_AND_RESET_ENCODER))
-        linear_slide_motor.setMode(DcMotor.RunMode(RUN_WITHOUT_ENCODER))
+        linear_slide_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linear_slide_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
