@@ -15,7 +15,7 @@ public class ArmController {
 
     final int LINEAR_SLIDE_MAX_LIMIT = 3100;
     int lin_slide_max_limit = LINEAR_SLIDE_MAX_LIMIT;
-    final int LINEAR_SLIDE_HORIZONTAL_LIMIT = 2600;
+    final int LINEAR_SLIDE_HORIZONTAL_LIMIT = 2500;
     final double LINEAR_SLIDE_KP = 0.005;
     final double LINEAR_SLIDE_KI = 0.00;
     final double LINEAR_SLIDE_KD = 0.00;
