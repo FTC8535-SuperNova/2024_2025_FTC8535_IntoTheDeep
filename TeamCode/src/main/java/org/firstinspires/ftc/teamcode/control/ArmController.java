@@ -61,7 +61,7 @@ public class ArmController {
     }
 
     public void update(double shoulderCommand, double linearSlideCommand, Telemetry telemetry) {
-        desiredShoulderPos += 10 * shoulderCommand;
+        desiredShoulderPos += 15 * shoulderCommand;
 
         if (desiredLinearSlidePos > LINEAR_SLIDE_HORIZONTAL_LIMIT) {
             shoulder_min_limit = SHOULDER_BOUNDARY_LIMIT;
@@ -69,7 +69,7 @@ public class ArmController {
             shoulder_min_limit = 0;
         }
 
-        desiredLinearSlidePos += 25 * linearSlideCommand;
+        desiredLinearSlidePos += 35 * linearSlideCommand;
         
         //limits the shoulder movement
         if (desiredShoulderPos > SHOULDER_MAX_LIMIT) {
