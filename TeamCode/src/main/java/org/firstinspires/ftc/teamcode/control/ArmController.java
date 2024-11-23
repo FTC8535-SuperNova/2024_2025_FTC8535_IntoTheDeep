@@ -58,17 +58,19 @@ public class ArmController {
     public void update(double shoulderCommand, double linearSlideCommand, Telemetry telemetry) {
         desiredShoulderPos += 10 * shoulderCommand;
 
+        //limits the shoulder movement
         if (desiredShoulderPos > SHOULDER_ENCODER_LIMIT) {
             desiredShoulderPos = SHOULDER_ENCODER_LIMIT;
-        } else if (desiredShoulderPos < 0) {
+        } else if (desiredShoulderPos < 0){
             desiredShoulderPos = 0;
         }
 
         desiredLinearSlidePos += 25 * linearSlideCommand;
 
+        //limits linear_slide movement
         if (desiredLinearSlidePos > LINEAR_SLIDE_ENCODER_LIMIT) {
             desiredLinearSlidePos = LINEAR_SLIDE_ENCODER_LIMIT;
-        } else if (desiredLinearSlidePos < 0) {
+        } else if (desiredLinearSlidePos < 0){
             desiredLinearSlidePos = 0;
         }
 
@@ -89,5 +91,10 @@ public class ArmController {
         shoulder_motor_1.setPower(shoulderPower1);
         shoulder_motor_2.setPower(shoulderPower2);
         linear_slide_motor.setPower(linearSlidePower);
+    }
+
+    public void ZeroLSEncoders() {
+        linear_slide_motor.setMode(DcMotor.RunMode(STOP_AND_RESET_ENCODER))
+        linear_slide_motor.setMode(DcMotor.RunMode(RUN_WITHOUT_ENCODER))
     }
 }
