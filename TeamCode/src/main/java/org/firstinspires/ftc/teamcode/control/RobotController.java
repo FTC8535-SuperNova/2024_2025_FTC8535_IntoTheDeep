@@ -2,15 +2,16 @@ package org.firstinspires.ftc.teamcode.control;
 
 import androidx.annotation.NonNull;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RobotController {
+    private Telemetry telemetry;
+
     //initialize motors and servos
     private DcMotor shoulder_motor_1 = null;
     private DcMotor shoulder_motor_2 = null;
@@ -29,9 +30,10 @@ public class RobotController {
 
     private final ArmController armController = new ArmController();
 
-    public void init() {
+    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.telemetry = telemetry;
         //Connect motors to irl motors
-        connectMotorsToHub();
+        connectMotorsToHub(hardwareMap);
 
         //set motor directions
         setMotorDirections();
@@ -40,36 +42,31 @@ public class RobotController {
 
     }
 
-    public void update(Telemetry telemetry, double shoulderCommand, double linearSlideCommand,
-                       double clawPos, double climberDrive, double axial, double lateral,
-                       double yaw, boolean isFastMode) {
+    public void update(double shoulderCommand, double linearSlideCommand, double climberDrive, double axial, double lateral,
+                       double yaw, boolean isFastMode, boolean clawClosed, boolean zeroLinearSlide) {
 
-            //reading controller inputs
-            telemetry.addData("Shoulder Cmd", shoulderCommand);
-            telemetry.addData("Lin Slide Cmd", linearSlideCommand);
-            armController.update(shoulderCommand, linearSlideCommand, telemetry);
+        //reading controller inputs
+        telemetry.addData("Shoulder Cmd", shoulderCommand);
+        telemetry.addData("Lin Slide Cmd", linearSlideCommand);
+        armController.update(shoulderCommand, linearSlideCommand, telemetry);
 
-            if (gamepad2.x) {
-                clawPos = 1.0;
-            } else if (gamepad2.y){
-                clawPos = 0.5;
-            }
+        double clawPos = clawClosed ? 1.0 : 0.5;
 
-            if (gamepad2.a) {
-                armController.ZeroLSEncoders();
-            }
+        if (zeroLinearSlide) {
+            armController.ZeroLSEncoders();
+        }
 
-            WheelPower wheelPower = computeWheelPower();
+        WheelPower wheelPower = computeWheelPower(axial, lateral, yaw, isFastMode);
 
-            //assign power to motors
-            assignMotorPowers(climberDrive, clawPos, wheelPower);
+        //assign power to motors
+        assignMotorPowers(climberDrive, clawPos, wheelPower);
 
-            // Show the elapsed game time and wheel power.
-        updateTelemetry(wheelPower);
+        // Show the elapsed game time and wheel power.
+        updateTelemetry(wheelPower, telemetry);
 
     }
 
-    private void updateTelemetry(WheelPower wheelPower) {
+    private void updateTelemetry(WheelPower wheelPower, Telemetry telemetry) {
         telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", wheelPower.leftFrontPower, wheelPower.rightFrontPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", wheelPower.leftBackPower, wheelPower.rightBackPower);
@@ -88,17 +85,9 @@ public class RobotController {
     }
 
     @NonNull
-    private WheelPower computeWheelPower() {
+    private WheelPower computeWheelPower(double axial, double lateral,
+                                         double yaw, boolean isFastMode) {
         double max;
-
-        // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-        double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-        double lateral =  gamepad1.right_stick_x;
-        double yaw     =  gamepad1.left_stick_x;
-
-        boolean isFastMode;
-
-        isFastMode = (gamepad1.right_trigger == 1);
 
         /*
          Combine the joystick requests for each axis-motion to determine each wheel's power.
@@ -170,7 +159,7 @@ public class RobotController {
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    private void connectMotorsToHub() {
+    private void connectMotorsToHub(HardwareMap hardwareMap) {
         shoulder_motor_1 = hardwareMap.get(DcMotor.class, "shoulder_left");
         shoulder_motor_2 = hardwareMap.get(DcMotor.class, "shoulder_right");
 
