@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ArmController {
 
     final int SHOULDER_MAX_LIMIT = 1520;
-    final int SHOULDER_BOUNDARY_LIMIT = 700; //TODO: Get Encoder value (placeholder here)
+    final int SHOULDER_BOUNDARY_LIMIT = 1000;
     int shoulder_min_limit = 0;
     final double SHOULDER_KP = 0.002;
     final double SHOULDER_KI = 0.0001;
@@ -15,7 +15,7 @@ public class ArmController {
 
     final int LINEAR_SLIDE_MAX_LIMIT = 3100;
     int lin_slide_max_limit = LINEAR_SLIDE_MAX_LIMIT;
-    final int LINEAR_SLIDE_HORIZONTAL_LIMIT = 2000; //TODO: Get Encoder value (placeholder here)
+    final int LINEAR_SLIDE_HORIZONTAL_LIMIT = 2600;
     final double LINEAR_SLIDE_KP = 0.005;
     final double LINEAR_SLIDE_KI = 0.00;
     final double LINEAR_SLIDE_KD = 0.00;
@@ -62,13 +62,14 @@ public class ArmController {
 
     public void update(double shoulderCommand, double linearSlideCommand, Telemetry telemetry) {
         desiredShoulderPos += 10 * shoulderCommand;
-        desiredLinearSlidePos += 25 * linearSlideCommand;
 
         if (desiredLinearSlidePos > LINEAR_SLIDE_HORIZONTAL_LIMIT) {
             shoulder_min_limit = SHOULDER_BOUNDARY_LIMIT;
         } else {
             shoulder_min_limit = 0;
         }
+
+        desiredLinearSlidePos += 25 * linearSlideCommand;
         
         //limits the shoulder movement
         if (desiredShoulderPos > SHOULDER_MAX_LIMIT) {
