@@ -6,15 +6,20 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class ArmController {
 
-    final int SHOULDER_ENCODER_LIMIT = 1520;
+    final int SHOULDER_MAX_LIMIT = 1520;
+    final int SHOULDER_BOUNDARY_LIMIT = 1000;
+    int shoulder_min_limit = 0;
     final double SHOULDER_KP = 0.002;
     final double SHOULDER_KI = 0.0001;
     final double SHOULDER_KD = 0.00001;
 
-    final int LINEAR_SLIDE_ENCODER_LIMIT = 3100;
+    final int LINEAR_SLIDE_MAX_LIMIT = 3100;
+    int lin_slide_max_limit = LINEAR_SLIDE_MAX_LIMIT;
+    final int LINEAR_SLIDE_HORIZONTAL_LIMIT = 2600;
     final double LINEAR_SLIDE_KP = 0.005;
     final double LINEAR_SLIDE_KI = 0.00;
     final double LINEAR_SLIDE_KD = 0.00;
+    
     double desiredShoulderPos = 0;
     double desiredLinearSlidePos = 0;
 
@@ -58,26 +63,38 @@ public class ArmController {
     public void update(double shoulderCommand, double linearSlideCommand, Telemetry telemetry) {
         desiredShoulderPos += 10 * shoulderCommand;
 
-        //limits the shoulder movement
-        if (desiredShoulderPos > SHOULDER_ENCODER_LIMIT) {
-            desiredShoulderPos = SHOULDER_ENCODER_LIMIT;
-        } else if (desiredShoulderPos < 0){
-            desiredShoulderPos = 0;
+        if (desiredLinearSlidePos > LINEAR_SLIDE_HORIZONTAL_LIMIT) {
+            shoulder_min_limit = SHOULDER_BOUNDARY_LIMIT;
+        } else {
+            shoulder_min_limit = 0;
         }
 
         desiredLinearSlidePos += 25 * linearSlideCommand;
+        
+        //limits the shoulder movement
+        if (desiredShoulderPos > SHOULDER_MAX_LIMIT) {
+            desiredShoulderPos = SHOULDER_MAX_LIMIT;
+        } else if (desiredShoulderPos < shoulder_min_limit){
+            desiredShoulderPos = shoulder_min_limit;
+        }
 
         //limits linear_slide movement
-        if (desiredLinearSlidePos > LINEAR_SLIDE_ENCODER_LIMIT) {
-            desiredLinearSlidePos = LINEAR_SLIDE_ENCODER_LIMIT;
-        } else if (desiredLinearSlidePos < 0){
+        if (desiredShoulderPos > SHOULDER_BOUNDARY_LIMIT) {
+           lin_slide_max_limit = LINEAR_SLIDE_MAX_LIMIT;
+        } else if (desiredShoulderPos < SHOULDER_BOUNDARY_LIMIT) {
+            lin_slide_max_limit = LINEAR_SLIDE_HORIZONTAL_LIMIT;
+        }
+
+        if (desiredLinearSlidePos > lin_slide_max_limit) {
+            desiredLinearSlidePos = lin_slide_max_limit;
+        } else if (desiredLinearSlidePos < 0) {
             desiredLinearSlidePos = 0;
         }
 
         double shoulderPower1 = shoulderPID1.computeMotorPower(desiredShoulderPos);
         double shoulderPower2 = shoulderPID2.computeMotorPower(desiredShoulderPos);
         double linearSlidePower = linearSlidePID.computeMotorPower(desiredLinearSlidePos);
-
+        
         // Optional: Display telemetry data for debugging
         telemetry.addData("Shoulder Motor 1 Position", shoulder_motor_1.getCurrentPosition());
         telemetry.addData("Shoulder Motor 2 Position", shoulder_motor_2.getCurrentPosition());
@@ -94,7 +111,7 @@ public class ArmController {
     }
 
     public void ZeroLSEncoders() {
-        linear_slide_motor.setMode(DcMotor.RunMode(STOP_AND_RESET_ENCODER))
-        linear_slide_motor.setMode(DcMotor.RunMode(RUN_WITHOUT_ENCODER))
+        linear_slide_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linear_slide_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
