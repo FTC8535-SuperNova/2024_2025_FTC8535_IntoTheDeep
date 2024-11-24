@@ -43,7 +43,7 @@ public class RobotController {
     }
 
     public void update(double shoulderCommand, double linearSlideCommand, double climberDrive, double axial, double lateral,
-                       double yaw, boolean isFastMode, boolean clawClosed, boolean zeroLinearSlide) {
+                       double yaw, boolean isFastMode, boolean clawClosed, boolean zeroLinearSlide, boolean grab_pos, boolean deliver_pos) {
 
         //reading controller inputs
         telemetry.addData("Shoulder Cmd", shoulderCommand);
@@ -55,6 +55,15 @@ public class RobotController {
         if (zeroLinearSlide) {
             armController.ZeroLSEncoders();
         }
+
+        if (grab_pos) {
+            armController.GrabSpecimenPos();
+        }
+
+        if (deliver_pos) {
+            armController.DeliverSpecimenPos();
+        }
+
 
         WheelPower wheelPower = computeWheelPower(axial, lateral, yaw, isFastMode);
 

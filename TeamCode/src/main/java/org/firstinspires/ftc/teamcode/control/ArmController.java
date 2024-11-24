@@ -114,4 +114,14 @@ public class ArmController {
         linear_slide_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         linear_slide_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+    public void GrabSpecimenPos() {
+        desiredLinearSlidePos = 700;
+        desiredShoulderPos = 350;
+    }
+
+    public void DeliverSpecimenPos() {
+        desiredLinearSlidePos = 100;
+        desiredShoulderPos = 1200;
+    }
 }
