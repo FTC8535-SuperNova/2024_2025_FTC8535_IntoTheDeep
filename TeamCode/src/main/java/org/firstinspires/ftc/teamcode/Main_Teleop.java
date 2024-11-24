@@ -35,9 +35,9 @@ public class Main_Teleop extends LinearOpMode {
                 climberDrive = 0;
             }
 
-            if (gamepad2.x) {
+            if (gamepad2.left_bumper) {
                 clawClosed = true;
-            } else if (gamepad2.y){
+            } else if (gamepad2.right_bumper){
                 clawClosed = false;
             }
 
@@ -45,8 +45,8 @@ public class Main_Teleop extends LinearOpMode {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.right_stick_x;
-            double yaw     =  gamepad1.left_stick_x;
+            double lateral =  gamepad1.left_stick_x;
+            double yaw     =  gamepad1.right_stick_x;
 
             boolean isFastMode = (gamepad1.right_trigger != 1);
 
