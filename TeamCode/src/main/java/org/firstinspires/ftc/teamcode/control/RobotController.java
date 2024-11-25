@@ -98,10 +98,10 @@ public class RobotController {
         double leftBackPower;
         double rightBackPower;
         if (isFastMode) {
-            leftFrontPower = axial + lateral + yaw;
-            rightFrontPower = axial - lateral - yaw;
-            leftBackPower = axial - lateral + yaw;
-            rightBackPower = axial + lateral - yaw;
+            leftFrontPower = (axial + lateral + yaw)*3/4;
+            rightFrontPower = (axial - lateral - yaw)*3/4;
+            leftBackPower = (axial - lateral + yaw)*3/4;
+            rightBackPower = (axial + lateral - yaw)*3/4;
         } else {
             leftFrontPower  = (axial + lateral + yaw)/4;
             rightFrontPower = (axial - lateral - yaw)/4;
