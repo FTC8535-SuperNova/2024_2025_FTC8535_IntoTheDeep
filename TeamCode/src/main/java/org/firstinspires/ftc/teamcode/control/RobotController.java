@@ -43,7 +43,7 @@ public class RobotController {
     }
 
     public void update(double shoulderCommand, double linearSlideCommand, double climberDrive, double axial, double lateral,
-                       double yaw, boolean isFastMode, boolean clawClosed, boolean zeroLinearSlide, boolean overrideArmLowLimits) {
+                       double yaw, boolean isFastMode, boolean clawClosed, boolean zeroLinearSlide, boolean zeroShoulder, boolean overrideArmLowLimits) {
 
         //reading controller inputs
         telemetry.addData("Shoulder Cmd", shoulderCommand);
@@ -53,7 +53,10 @@ public class RobotController {
         double clawPos = clawClosed ? 1.0 : 0.5;
 
         if (zeroLinearSlide) {
-            armController.ZeroLSEncoders();
+            armController.zeroLSEncoders();
+        }
+        if (zeroShoulder) {
+            armController.zeroShoulderEncoders();
         }
 
         WheelPower wheelPower = computeWheelPower(axial, lateral, yaw, isFastMode);

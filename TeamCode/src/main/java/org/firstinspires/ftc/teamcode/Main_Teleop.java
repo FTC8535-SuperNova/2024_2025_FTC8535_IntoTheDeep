@@ -42,8 +42,9 @@ public class Main_Teleop extends LinearOpMode {
                 clawClosed = false;
             }
 
-            boolean overrideArmLowLimits = gamepad2.y;
+            boolean overrideArmLowLimits = gamepad2.right_trigger > 0.01;
             boolean zeroLinearSlide = gamepad1.x;
+            boolean zeroShoulder = gamepad1.y;
 
             if (gamepad2.dpad_down) {
                 // Go to grab specimen position
@@ -64,7 +65,7 @@ public class Main_Teleop extends LinearOpMode {
             boolean isFastMode = (gamepad1.right_trigger != 1);
 
             robotController.update(shoulderCommand, linearSlideCommand, climberDrive,
-                    axial, lateral, yaw, isFastMode, clawClosed, zeroLinearSlide, overrideArmLowLimits);
+                    axial, lateral, yaw, isFastMode, clawClosed, zeroLinearSlide, zeroShoulder, overrideArmLowLimits);
 
         }
 
