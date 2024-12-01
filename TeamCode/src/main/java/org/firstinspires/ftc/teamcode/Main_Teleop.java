@@ -28,10 +28,10 @@ public class Main_Teleop extends LinearOpMode {
             double linearSlideCommand = -1 * gamepad2.right_stick_y;
 
             double climberDrive;
-            if (gamepad2.right_trigger > 0) {
-                climberDrive = gamepad2.right_trigger;
-            } else if (gamepad2.left_trigger > 0) {
-                climberDrive = -gamepad2.left_trigger;
+            if (gamepad1.right_bumper) {
+                climberDrive = 1.0;
+            } else if (gamepad1.left_bumper) {
+                climberDrive = -1.0;
             } else {
                 climberDrive = 0;
             }

@@ -75,22 +75,23 @@ public class ArmController {
     public void update(double shoulderCommand, double linearSlideCommand, boolean overrideArmLowLimits, Telemetry telemetry) {
         switch (armMode) {
             case GRAB_SPECIMEN:
-                if (Math.abs(GRAB_SPECIMEN_SHOULDER_POS - desiredShoulderPos) < SHOULDER_POS_INCREMENT) {
+                if (Math.abs(GRAB_SPECIMEN_SHOULDER_POS - desiredShoulderPos) <= SHOULDER_POS_INCREMENT) {
                     desiredShoulderPos = GRAB_SPECIMEN_SHOULDER_POS;
                     armMode = ArmMode.DRIVER_CONTROL;
                 } else if (desiredShoulderPos < GRAB_SPECIMEN_SHOULDER_POS) {
-                    desiredShoulderPos += GRAB_SPECIMEN_SHOULDER_POS;
+                    desiredShoulderPos += SHOULDER_POS_INCREMENT;
                 } else {
-                    desiredShoulderPos -= GRAB_SPECIMEN_SHOULDER_POS;
+                    desiredShoulderPos -= SHOULDER_POS_INCREMENT;
                 }
                 break;
             case HIGH_SPECIMEN:
                 if (Math.abs(HIGH_SPECIMEN_SHOULDER_POS - desiredShoulderPos) < SHOULDER_POS_INCREMENT) {
                     desiredShoulderPos = HIGH_SPECIMEN_SHOULDER_POS;
+                    armMode = ArmMode.DRIVER_CONTROL;
                 } else if (desiredShoulderPos < HIGH_SPECIMEN_SHOULDER_POS) {
-                    desiredShoulderPos += HIGH_SPECIMEN_SHOULDER_POS;
+                    desiredShoulderPos += SHOULDER_POS_INCREMENT;
                 } else {
-                    desiredShoulderPos -= HIGH_SPECIMEN_SHOULDER_POS;
+                    desiredShoulderPos -= SHOULDER_POS_INCREMENT;
                 }
                 break;
             default:
@@ -112,18 +113,19 @@ public class ArmController {
                     desiredLinearSlidePos = GRAB_SPECIMEN_LINEAR_SLIDE_POS;
                     armMode = ArmMode.DRIVER_CONTROL;
                 } else if (desiredLinearSlidePos < GRAB_SPECIMEN_LINEAR_SLIDE_POS) {
-                    desiredLinearSlidePos += GRAB_SPECIMEN_LINEAR_SLIDE_POS;
+                    desiredLinearSlidePos += LINEAR_SLIDE_POS_INCREMENT;
                 } else {
-                    desiredLinearSlidePos -= GRAB_SPECIMEN_LINEAR_SLIDE_POS;
+                    desiredLinearSlidePos -= LINEAR_SLIDE_POS_INCREMENT;
                 }
                 break;
             case HIGH_SPECIMEN:
                 if (Math.abs(HIGH_SPECIMEN_LINEAR_SLIDE_POS - desiredLinearSlidePos) < LINEAR_SLIDE_POS_INCREMENT) {
                     desiredLinearSlidePos = HIGH_SPECIMEN_LINEAR_SLIDE_POS;
+                    armMode = ArmMode.DRIVER_CONTROL;
                 } else if (desiredLinearSlidePos < HIGH_SPECIMEN_LINEAR_SLIDE_POS) {
-                    desiredLinearSlidePos += HIGH_SPECIMEN_LINEAR_SLIDE_POS;
+                    desiredLinearSlidePos += LINEAR_SLIDE_POS_INCREMENT;
                 } else {
-                    desiredLinearSlidePos -= HIGH_SPECIMEN_LINEAR_SLIDE_POS;
+                    desiredLinearSlidePos -= LINEAR_SLIDE_POS_INCREMENT;
                 }
                 break;
             default:
