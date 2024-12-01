@@ -61,7 +61,7 @@ public class Main_Teleop extends LinearOpMode {
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
 
-            boolean isFastMode = (gamepad1.right_trigger == 1);
+            boolean isFastMode = (gamepad1.right_trigger != 1);
 
             robotController.update(shoulderCommand, linearSlideCommand, climberDrive,
                     axial, lateral, yaw, isFastMode, clawClosed, zeroLinearSlide, overrideArmLowLimits);
