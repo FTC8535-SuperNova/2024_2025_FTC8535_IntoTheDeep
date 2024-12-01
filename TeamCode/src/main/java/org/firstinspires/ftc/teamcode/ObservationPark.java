@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.control.RobotController;
 
 
 @Autonomous(name= "Observation Park")
-
 public class ObservationPark extends LinearOpMode {
     private final RobotController robotController = new RobotController();
 
@@ -36,7 +35,7 @@ public class ObservationPark extends LinearOpMode {
 
 
             robotController.update(0, 0, 0,
-                    0, lateral, 0, false, true, false);
+                    0, lateral, 0, false, true, false, false);
 
         }
     }

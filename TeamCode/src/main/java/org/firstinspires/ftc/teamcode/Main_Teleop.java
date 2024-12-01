@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.control.ArmMode;
 import org.firstinspires.ftc.teamcode.control.RobotController;
 
 @TeleOp
@@ -41,10 +42,19 @@ public class Main_Teleop extends LinearOpMode {
                 clawClosed = false;
             }
 
+            boolean overrideArmLowLimits = gamepad2.y;
+            boolean zeroLinearSlide = gamepad1.x;
 
-            boolean zeroLinearSlide = gamepad1.dpad_up;
-            boolean grabPos = gamepad2.b;
-            boolean deliverPos = gamepad2.a;
+            if (gamepad2.dpad_down) {
+                // Go to grab specimen position
+                robotController.setArmMode(ArmMode.GRAB_SPECIMEN);
+            } else if (gamepad2.dpad_up) {
+                // Go to deliver high specimen position
+                robotController.setArmMode(ArmMode.HIGH_SPECIMEN);
+            }
+            if (gamepad2.a) {
+                robotController.setArmMode(ArmMode.DRIVER_CONTROL);
+            }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
@@ -54,7 +64,7 @@ public class Main_Teleop extends LinearOpMode {
             boolean isFastMode = (gamepad1.right_trigger == 1);
 
             robotController.update(shoulderCommand, linearSlideCommand, climberDrive,
-                    axial, lateral, yaw, isFastMode, clawClosed, zeroLinearSlide, grabPos, deliverPos);
+                    axial, lateral, yaw, isFastMode, clawClosed, zeroLinearSlide, overrideArmLowLimits);
 
         }
 

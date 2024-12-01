@@ -43,27 +43,18 @@ public class RobotController {
     }
 
     public void update(double shoulderCommand, double linearSlideCommand, double climberDrive, double axial, double lateral,
-                       double yaw, boolean isFastMode, boolean clawClosed, boolean zeroLinearSlide, boolean grab_pos, boolean deliver_pos) {
+                       double yaw, boolean isFastMode, boolean clawClosed, boolean zeroLinearSlide, boolean overrideArmLowLimits) {
 
         //reading controller inputs
         telemetry.addData("Shoulder Cmd", shoulderCommand);
         telemetry.addData("Lin Slide Cmd", linearSlideCommand);
-        armController.update(shoulderCommand, linearSlideCommand, telemetry);
+        armController.update(shoulderCommand, linearSlideCommand, overrideArmLowLimits, telemetry);
 
         double clawPos = clawClosed ? 1.0 : 0.5;
 
         if (zeroLinearSlide) {
             armController.ZeroLSEncoders();
         }
-
-        if (grab_pos) {
-            armController.GrabSpecimenPos();
-        }
-
-        if (deliver_pos) {
-            armController.DeliverSpecimenPos();
-        }
-
 
         WheelPower wheelPower = computeWheelPower(axial, lateral, yaw, isFastMode);
 
@@ -182,5 +173,10 @@ public class RobotController {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+    }
+
+
+    public void setArmMode(ArmMode armMode) {
+        armController.setArmMode(armMode);
     }
 }

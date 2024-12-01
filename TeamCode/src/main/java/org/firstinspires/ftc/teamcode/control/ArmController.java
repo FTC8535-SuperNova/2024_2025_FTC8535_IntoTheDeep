@@ -6,6 +6,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class ArmController {
 
+    static final int SHOULDER_POS_INCREMENT = 10;
+    static final int LINEAR_SLIDE_POS_INCREMENT = 25;
+    public static final int GRAB_SPECIMEN_LINEAR_SLIDE_POS = 410;
+    public static final int GRAB_SPECIMEN_SHOULDER_POS = 500;
+    public static final int HIGH_SPECIMEN_LINEAR_SLIDE_POS = 100;
+    public static final int HIGH_SPECIMEN_SHOULDER_POS = 1200;
+
     final int SHOULDER_MAX_LIMIT = 1520;
     final int SHOULDER_BOUNDARY_LIMIT = 1000;
     int shoulder_min_limit = 0;
@@ -31,6 +38,8 @@ public class ArmController {
     PositionPIDController shoulderPID2;
     PositionPIDController linearSlidePID;
 
+    private ArmMode armMode = ArmMode.DRIVER_CONTROL;
+
     public void init(DcMotor shoulder_motor_1, DcMotor shoulder_motor_2, DcMotor linear_slide_motor) {
         // Connect shoulder_motor variables to shoulder motors on robot
         // Initialize motors
@@ -52,6 +61,9 @@ public class ArmController {
         shoulder_motor_2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         linear_slide_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        shoulder_motor_1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shoulder_motor_2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         shoulderPID1 = new PositionPIDController(shoulder_motor_1,
                 SHOULDER_KP, SHOULDER_KI, SHOULDER_KD);
         shoulderPID2 = new PositionPIDController(shoulder_motor_2,
@@ -60,21 +72,69 @@ public class ArmController {
                 LINEAR_SLIDE_KP, LINEAR_SLIDE_KI, LINEAR_SLIDE_KD);
     }
 
-    public void update(double shoulderCommand, double linearSlideCommand, Telemetry telemetry) {
-        desiredShoulderPos += 10 * shoulderCommand;
+    public void update(double shoulderCommand, double linearSlideCommand, boolean overrideArmLowLimits, Telemetry telemetry) {
+        switch (armMode) {
+            case GRAB_SPECIMEN:
+                if (Math.abs(GRAB_SPECIMEN_SHOULDER_POS - desiredShoulderPos) < SHOULDER_POS_INCREMENT) {
+                    desiredShoulderPos = GRAB_SPECIMEN_SHOULDER_POS;
+                    armMode = ArmMode.DRIVER_CONTROL;
+                } else if (desiredShoulderPos < GRAB_SPECIMEN_SHOULDER_POS) {
+                    desiredShoulderPos += GRAB_SPECIMEN_SHOULDER_POS;
+                } else {
+                    desiredShoulderPos -= GRAB_SPECIMEN_SHOULDER_POS;
+                }
+                break;
+            case HIGH_SPECIMEN:
+                if (Math.abs(HIGH_SPECIMEN_SHOULDER_POS - desiredShoulderPos) < SHOULDER_POS_INCREMENT) {
+                    desiredShoulderPos = HIGH_SPECIMEN_SHOULDER_POS;
+                } else if (desiredShoulderPos < HIGH_SPECIMEN_SHOULDER_POS) {
+                    desiredShoulderPos += HIGH_SPECIMEN_SHOULDER_POS;
+                } else {
+                    desiredShoulderPos -= HIGH_SPECIMEN_SHOULDER_POS;
+                }
+                break;
+            default:
+                desiredShoulderPos += SHOULDER_POS_INCREMENT * shoulderCommand;
+                break;
+        }
 
         if (desiredLinearSlidePos > LINEAR_SLIDE_HORIZONTAL_LIMIT) {
             shoulder_min_limit = SHOULDER_BOUNDARY_LIMIT;
+        } else if (overrideArmLowLimits) {
+            shoulder_min_limit = -1000;
         } else {
             shoulder_min_limit = 0;
         }
 
-        desiredLinearSlidePos += 25 * linearSlideCommand;
-        
+        switch (armMode) {
+            case GRAB_SPECIMEN:
+                if (Math.abs(GRAB_SPECIMEN_LINEAR_SLIDE_POS - desiredLinearSlidePos) <= LINEAR_SLIDE_POS_INCREMENT) {
+                    desiredLinearSlidePos = GRAB_SPECIMEN_LINEAR_SLIDE_POS;
+                    armMode = ArmMode.DRIVER_CONTROL;
+                } else if (desiredLinearSlidePos < GRAB_SPECIMEN_LINEAR_SLIDE_POS) {
+                    desiredLinearSlidePos += GRAB_SPECIMEN_LINEAR_SLIDE_POS;
+                } else {
+                    desiredLinearSlidePos -= GRAB_SPECIMEN_LINEAR_SLIDE_POS;
+                }
+                break;
+            case HIGH_SPECIMEN:
+                if (Math.abs(HIGH_SPECIMEN_LINEAR_SLIDE_POS - desiredLinearSlidePos) < LINEAR_SLIDE_POS_INCREMENT) {
+                    desiredLinearSlidePos = HIGH_SPECIMEN_LINEAR_SLIDE_POS;
+                } else if (desiredLinearSlidePos < HIGH_SPECIMEN_LINEAR_SLIDE_POS) {
+                    desiredLinearSlidePos += HIGH_SPECIMEN_LINEAR_SLIDE_POS;
+                } else {
+                    desiredLinearSlidePos -= HIGH_SPECIMEN_LINEAR_SLIDE_POS;
+                }
+                break;
+            default:
+                desiredLinearSlidePos += LINEAR_SLIDE_POS_INCREMENT * linearSlideCommand;
+                break;
+        }
+
         //limits the shoulder movement
         if (desiredShoulderPos > SHOULDER_MAX_LIMIT) {
             desiredShoulderPos = SHOULDER_MAX_LIMIT;
-        } else if (desiredShoulderPos < shoulder_min_limit){
+        } else if (desiredShoulderPos < shoulder_min_limit) {
             desiredShoulderPos = shoulder_min_limit;
         }
 
@@ -85,10 +145,11 @@ public class ArmController {
             lin_slide_max_limit = LINEAR_SLIDE_HORIZONTAL_LIMIT;
         }
 
+        int linear_slide_min_limit = overrideArmLowLimits ? -2000 : 0;
         if (desiredLinearSlidePos > lin_slide_max_limit) {
             desiredLinearSlidePos = lin_slide_max_limit;
-        } else if (desiredLinearSlidePos < 0) {
-            desiredLinearSlidePos = 0;
+        } else if (desiredLinearSlidePos < linear_slide_min_limit) {
+            desiredLinearSlidePos = linear_slide_min_limit;
         }
 
         double shoulderPower1 = shoulderPID1.computeMotorPower(desiredShoulderPos);
@@ -115,26 +176,8 @@ public class ArmController {
         linear_slide_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void GrabSpecimenPos() {
-        //Incrementation code is commented out in case it's needed later
-//        while (linear_slide_motor.getCurrentPosition() < 700) {
-//            desiredLinearSlidePos += 50;
-//        }
-        desiredLinearSlidePos = 700;
-//        while (shoulder_motor_1.getCurrentPosition() < 350) {
-//            desiredShoulderPos += 50;
-//        }
-        desiredShoulderPos = 350;
+    public void setArmMode(ArmMode armMode) {
+        this.armMode = armMode;
     }
 
-    public void DeliverSpecimenPos() {
-//        while (linear_slide_motor.getCurrentPosition() < 100) {
-//            desiredLinearSlidePos += 20;
-//        }
-        desiredLinearSlidePos = 100;
-//        while (linear_slide_motor.getCurrentPosition() < 1200) {
-//            desiredLinearSlidePos += 50;
-//        }
-        desiredShoulderPos = 1200;
-    }
 }
