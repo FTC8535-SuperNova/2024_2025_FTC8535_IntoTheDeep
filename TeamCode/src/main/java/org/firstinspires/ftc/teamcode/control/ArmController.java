@@ -116,12 +116,25 @@ public class ArmController {
     }
 
     public void GrabSpecimenPos() {
+        //Incrementation code is commented out in case it's needed later
+//        while (linear_slide_motor.getCurrentPosition() < 700) {
+//            desiredLinearSlidePos += 50;
+//        }
         desiredLinearSlidePos = 700;
+//        while (shoulder_motor_1.getCurrentPosition() < 350) {
+//            desiredShoulderPos += 50;
+//        }
         desiredShoulderPos = 350;
     }
 
     public void DeliverSpecimenPos() {
+//        while (linear_slide_motor.getCurrentPosition() < 100) {
+//            desiredLinearSlidePos += 20;
+//        }
         desiredLinearSlidePos = 100;
+//        while (linear_slide_motor.getCurrentPosition() < 1200) {
+//            desiredLinearSlidePos += 50;
+//        }
         desiredShoulderPos = 1200;
     }
 }
