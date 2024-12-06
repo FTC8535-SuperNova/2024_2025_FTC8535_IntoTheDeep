@@ -16,7 +16,7 @@ public class Main_Teleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robotController.init(hardwareMap, telemetry);
+        robotController.init(hardwareMap, telemetry, false);
 
         waitForStart();
 

@@ -30,15 +30,15 @@ public class RobotController {
 
     private final ArmController armController = new ArmController();
 
-    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, boolean zeroEncoders) {
         this.telemetry = telemetry;
         //Connect motors to irl motors
         connectMotorsToHub(hardwareMap);
 
         //set motor directions
-        setMotorDirections();
+        setMotorDirections(zeroEncoders);
 
-        armController.init(shoulder_motor_1, shoulder_motor_2, linear_slide);
+        armController.init(shoulder_motor_1, shoulder_motor_2, linear_slide, zeroEncoders);
 
     }
 
@@ -141,9 +141,11 @@ public class RobotController {
         }
     }
 
-    private void setMotorDirections() {
+    private void setMotorDirections(boolean zeroEncoders) {
         climber.setDirection(DcMotor.Direction.FORWARD);
-        climber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (zeroEncoders) {
+            climber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
         climber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -151,10 +153,12 @@ public class RobotController {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (zeroEncoders) {
+            leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

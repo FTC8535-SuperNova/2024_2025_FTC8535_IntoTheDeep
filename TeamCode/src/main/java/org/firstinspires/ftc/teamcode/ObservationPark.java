@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.control.RobotController;
 
 
-@Autonomous(name= "Observation Park")
+@Autonomous(name= "Observation Park", preselectTeleOp = "Main_Teleop")
 public class ObservationPark extends LinearOpMode {
     private final RobotController robotController = new RobotController();
 
@@ -18,7 +18,7 @@ public class ObservationPark extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robotController.init(hardwareMap, telemetry);
+        robotController.init(hardwareMap, telemetry, true);
 
         waitForStart();
 
