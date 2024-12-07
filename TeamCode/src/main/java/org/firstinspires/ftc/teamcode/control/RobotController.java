@@ -50,7 +50,7 @@ public class RobotController {
         telemetry.addData("Lin Slide Cmd", linearSlideCommand);
         armController.update(shoulderCommand, linearSlideCommand, overrideArmLowLimits, telemetry);
 
-        double clawPos = clawClosed ? 1.0 : 0.5;
+        double clawPos = clawClosed ? 1.0 : 0.6;
 
         if (zeroLinearSlide) {
             armController.zeroLSEncoders();
