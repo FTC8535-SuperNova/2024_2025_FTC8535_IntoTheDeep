@@ -12,6 +12,8 @@ public class ArmController {
     public static final int GRAB_SPECIMEN_SHOULDER_POS = 500;
     public static final int HIGH_SPECIMEN_LINEAR_SLIDE_POS = 100;
     public static final int HIGH_SPECIMEN_SHOULDER_POS = 1200;
+    public static final int HIGH_BASKET_LINEAR_SLIDE_POS = 2700;
+    public static final int HIGH_BASKET_SHOULDER_POS = 1425;
 
     final int SHOULDER_MAX_LIMIT = 1600;
     final int SHOULDER_BOUNDARY_LIMIT = 1000;
@@ -98,6 +100,15 @@ public class ArmController {
                     desiredShoulderPos -= SHOULDER_POS_INCREMENT;
                 }
                 break;
+            case HIGH_BASKET:
+                if (Math.abs(HIGH_BASKET_SHOULDER_POS - desiredShoulderPos) < SHOULDER_POS_INCREMENT) {
+                    desiredShoulderPos = HIGH_BASKET_SHOULDER_POS;
+                    shoulderInPos = true;
+                } else if (desiredShoulderPos < HIGH_BASKET_SHOULDER_POS) {
+                    desiredShoulderPos += SHOULDER_POS_INCREMENT;
+                } else {
+                    desiredShoulderPos -= SHOULDER_POS_INCREMENT;
+                }
             default:
                 desiredShoulderPos += SHOULDER_POS_INCREMENT * shoulderCommand;
                 break;
@@ -127,6 +138,16 @@ public class ArmController {
                     desiredLinearSlidePos = HIGH_SPECIMEN_LINEAR_SLIDE_POS;
                     linSlideInPos = true;
                 } else if (desiredLinearSlidePos < HIGH_SPECIMEN_LINEAR_SLIDE_POS) {
+                    desiredLinearSlidePos += LINEAR_SLIDE_POS_INCREMENT;
+                } else {
+                    desiredLinearSlidePos -= LINEAR_SLIDE_POS_INCREMENT;
+                }
+                break;
+            case HIGH_BASKET:
+                if (Math.abs(HIGH_BASKET_LINEAR_SLIDE_POS - desiredLinearSlidePos) < LINEAR_SLIDE_POS_INCREMENT) {
+                    desiredLinearSlidePos = HIGH_BASKET_LINEAR_SLIDE_POS;
+                    linSlideInPos = true;
+                } else if (desiredLinearSlidePos < HIGH_BASKET_LINEAR_SLIDE_POS) {
                     desiredLinearSlidePos += LINEAR_SLIDE_POS_INCREMENT;
                 } else {
                     desiredLinearSlidePos -= LINEAR_SLIDE_POS_INCREMENT;
