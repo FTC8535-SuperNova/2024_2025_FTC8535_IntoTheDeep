@@ -40,7 +40,7 @@ public class ArmController {
 
     private ArmMode armMode = ArmMode.DRIVER_CONTROL;
 
-    public void init(DcMotor shoulder_motor_1, DcMotor shoulder_motor_2, DcMotor linear_slide_motor) {
+    public void init(DcMotor shoulder_motor_1, DcMotor shoulder_motor_2, DcMotor linear_slide_motor, boolean zeroEncoders) {
         // Connect shoulder_motor variables to shoulder motors on robot
         // Initialize motors
         this.shoulder_motor_1 = shoulder_motor_1;
@@ -53,9 +53,11 @@ public class ArmController {
         linear_slide_motor.setDirection(DcMotor.Direction.REVERSE);
 
         // Reset encoders and set to use encoder mode
-        shoulder_motor_1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shoulder_motor_2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        linear_slide_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (zeroEncoders) {
+            shoulder_motor_1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            shoulder_motor_2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            linear_slide_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
 
         shoulder_motor_1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shoulder_motor_2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -73,11 +75,13 @@ public class ArmController {
     }
 
     public void update(double shoulderCommand, double linearSlideCommand, boolean overrideArmLowLimits, Telemetry telemetry) {
+        boolean shoulderInPos = false;
+        boolean linSlideInPos = false;
         switch (armMode) {
             case GRAB_SPECIMEN:
                 if (Math.abs(GRAB_SPECIMEN_SHOULDER_POS - desiredShoulderPos) <= SHOULDER_POS_INCREMENT) {
                     desiredShoulderPos = GRAB_SPECIMEN_SHOULDER_POS;
-                    armMode = ArmMode.DRIVER_CONTROL;
+                    shoulderInPos = true;
                 } else if (desiredShoulderPos < GRAB_SPECIMEN_SHOULDER_POS) {
                     desiredShoulderPos += SHOULDER_POS_INCREMENT;
                 } else {
@@ -87,7 +91,7 @@ public class ArmController {
             case HIGH_SPECIMEN:
                 if (Math.abs(HIGH_SPECIMEN_SHOULDER_POS - desiredShoulderPos) < SHOULDER_POS_INCREMENT) {
                     desiredShoulderPos = HIGH_SPECIMEN_SHOULDER_POS;
-                    armMode = ArmMode.DRIVER_CONTROL;
+                    shoulderInPos = true;
                 } else if (desiredShoulderPos < HIGH_SPECIMEN_SHOULDER_POS) {
                     desiredShoulderPos += SHOULDER_POS_INCREMENT;
                 } else {
@@ -111,7 +115,7 @@ public class ArmController {
             case GRAB_SPECIMEN:
                 if (Math.abs(GRAB_SPECIMEN_LINEAR_SLIDE_POS - desiredLinearSlidePos) <= LINEAR_SLIDE_POS_INCREMENT) {
                     desiredLinearSlidePos = GRAB_SPECIMEN_LINEAR_SLIDE_POS;
-                    armMode = ArmMode.DRIVER_CONTROL;
+                    linSlideInPos = true;
                 } else if (desiredLinearSlidePos < GRAB_SPECIMEN_LINEAR_SLIDE_POS) {
                     desiredLinearSlidePos += LINEAR_SLIDE_POS_INCREMENT;
                 } else {
@@ -121,7 +125,7 @@ public class ArmController {
             case HIGH_SPECIMEN:
                 if (Math.abs(HIGH_SPECIMEN_LINEAR_SLIDE_POS - desiredLinearSlidePos) < LINEAR_SLIDE_POS_INCREMENT) {
                     desiredLinearSlidePos = HIGH_SPECIMEN_LINEAR_SLIDE_POS;
-                    armMode = ArmMode.DRIVER_CONTROL;
+                    linSlideInPos = true;
                 } else if (desiredLinearSlidePos < HIGH_SPECIMEN_LINEAR_SLIDE_POS) {
                     desiredLinearSlidePos += LINEAR_SLIDE_POS_INCREMENT;
                 } else {
@@ -131,6 +135,9 @@ public class ArmController {
             default:
                 desiredLinearSlidePos += LINEAR_SLIDE_POS_INCREMENT * linearSlideCommand;
                 break;
+        }
+        if (armMode != ArmMode.DRIVER_CONTROL && shoulderInPos && linSlideInPos){
+            armMode = ArmMode.DRIVER_CONTROL;
         }
 
         //limits the shoulder movement
