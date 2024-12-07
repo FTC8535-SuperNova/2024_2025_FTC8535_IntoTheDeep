@@ -52,6 +52,8 @@ public class Main_Teleop extends LinearOpMode {
             } else if (gamepad2.dpad_up) {
                 // Go to deliver high specimen position
                 robotController.setArmMode(ArmMode.HIGH_SPECIMEN);
+            } else if (gamepad2.dpad_right) {
+                robotController.setArmMode(ArmMode.HIGH_BASKET);
             }
             if (gamepad2.a) {
                 robotController.setArmMode(ArmMode.DRIVER_CONTROL);
