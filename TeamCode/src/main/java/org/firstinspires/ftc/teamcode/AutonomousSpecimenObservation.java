@@ -46,25 +46,25 @@ public class AutonomousSpecimenObservation extends LinearOpMode {
                 axial = 1;
                 robotController.update(0, 0, 0, axial, lateral, 0, false, true, false,
                         false, false);
-            } else if(elapsedTime < 4.0){
+            } else if(elapsedTime < 4.3){
                 //push the arm down a bit to place the specimen on the bar
                 shoulderCommand = -1;
                 robotController.setArmMode(ArmMode.DRIVER_CONTROL);
                 robotController.update(shoulderCommand, 0, 0,
                         0, 0, 0, false, true, false,
                         false, false);
-            } else if(elapsedTime < 4.5){
+            } else if(elapsedTime < 4.8){
                 //make the claw let go of the specimen
                 clawClosed = false;
                 robotController.update(0, 0, 0,
                         0, 0, 0, false, false, false,
                         false, false);
-            } else if(elapsedTime < 7.0){
+            } else if(elapsedTime < 7.3){
                 //make the robot go backwards to the wall
                 axial = -1;
                 robotController.update(0, 0, 0, axial, 0, 0, false, true, false,
                         false, false);
-            } else if(elapsedTime < 12.0){
+            } else if(elapsedTime < 12.3){
                 // do what noah said and move the robot to the park zone
                 robotController.setArmMode(ArmMode.GRAB_SPECIMEN);
                 lateral = 1;
