@@ -28,6 +28,8 @@ public class RobotController {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+    private boolean climberOverride = false;
+
     private final ArmController armController = new ArmController();
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry, boolean zeroEncoders) {
@@ -77,7 +79,11 @@ public class RobotController {
     }
 
     private void assignMotorPowers(double climber_drive, double clawPos, WheelPower wheelPower) {
-        climber.setPower(climber_drive);
+        if (climber.getCurrentPosition() < 0 || climber_drive < 0 || climberOverride) {
+            climber.setPower(climber_drive);
+        } else {
+            climber.setPower(0);
+        }
 
         claw.setPosition(clawPos);
 
@@ -85,6 +91,10 @@ public class RobotController {
         rightFrontDrive.setPower(wheelPower.rightFrontPower);
         leftBackDrive.setPower(wheelPower.leftBackPower);
         rightBackDrive.setPower(wheelPower.rightBackPower);
+    }
+
+    public void setClimberOverride(boolean override) {
+        climberOverride = override;
     }
 
     @NonNull
