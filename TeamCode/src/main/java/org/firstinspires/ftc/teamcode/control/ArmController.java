@@ -74,6 +74,9 @@ public class ArmController {
                 SHOULDER_KP, SHOULDER_KI, SHOULDER_KD);
         linearSlidePID = new PositionPIDController(linear_slide_motor,
                 LINEAR_SLIDE_KP, LINEAR_SLIDE_KI, LINEAR_SLIDE_KD);
+
+        desiredShoulderPos = shoulder_motor_1.getCurrentPosition();
+        desiredLinearSlidePos = linear_slide_motor.getCurrentPosition();
     }
 
     public void update(double shoulderCommand, double linearSlideCommand, boolean overrideArmLowLimits, Telemetry telemetry) {

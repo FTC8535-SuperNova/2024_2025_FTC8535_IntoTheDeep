@@ -35,6 +35,7 @@ public class Main_Teleop extends LinearOpMode {
             } else {
                 climberDrive = 0;
             }
+            robotController.setClimberOverride(gamepad1.a);
 
             if (gamepad2.left_bumper) {
                 clawClosed = true;
