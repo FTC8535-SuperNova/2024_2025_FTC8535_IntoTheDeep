@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.control.RobotController;
 
 
 @Autonomous(name= "AutonomousSeveralSpecimen", preselectTeleOp = "Main_Teleop")
-public class AutonomousSpecimenObservation extends LinearOpMode {
+public class AutonomousSeveralSpecimen extends LinearOpMode {
     private final RobotController robotController = new RobotController();
 
     private final ElapsedTime runtime = new ElapsedTime();
