@@ -163,7 +163,7 @@ public class AutonomousSpecimenObservation extends LinearOpMode {
                 robotController.update(0, 0, 0, axial, 0, 0, false, true, false,
                         false, false);
             } else if (elapsedTime < 20.0) {
-                //persuade the robot with the federalist paper no. 10 to drive to the right
+                //persuade the robot with the Federalist Papers no. 10 to drive to the right
                 lateral = 1;
                 robotController.update(0, 0, 0,
                         0, lateral, 0, false, true, false,
