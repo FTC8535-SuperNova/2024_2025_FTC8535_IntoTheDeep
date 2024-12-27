@@ -18,6 +18,7 @@ public class AutonomousHighBasket extends LinearOpMode {
     double axial = 0;
     double shoulderCommand = 0;
     boolean clawClosed;
+    double yaw;
 
     @Override
     public void runOpMode() {
@@ -32,41 +33,69 @@ public class AutonomousHighBasket extends LinearOpMode {
             double elapsedTime = runtime.seconds();
 
 
-            if(elapsedTime < 3.0) {
-                //move the arm motor to the point where it can place the specimen on the bar
+            if (elapsedTime < 3.0) {
+                //make the arm go to the high basket position
                 robotController.setArmMode(ArmMode.HIGH_BASKET);
-                robotController.update(0, 0, 0,
-                        0, lateral, 0, false, true, false,
+                robotController.update(shoulderCommand, 0, 0, 0, 0, 0, false, true, false,
                         false, false);
-            } else if(elapsedTime < 4.0) {
-                //move the robot forward to the observation zone
-                robotController.setArmMode(ArmMode.HIGH_BASKET);
+            } else if (elapsedTime < 4.0){
+                //drive sideways, towards the baskets
+                lateral = -1;
+                robotController.update(0, 0, 0, 0, lateral, 0, false, true, false,
+                    false, false);
+        } else if(elapsedTime < 4.8){
+                //spin the robot so it can place the sample into the high basket
+                yaw = 1;
+                robotController.update(0, 0, 0, 0, 0, yaw, false, true, false,
+                        false, false);
+            } else if(elapsedTime < 5.3){
+                //drive forwards the TINIEST amount to the basket
                 axial = 1;
                 robotController.update(0, 0, 0, axial, 0, 0, false, true, false,
                         false, false);
-            } else if(elapsedTime < 4.5){
-                //make the claw let go of the specimen
-                clawClosed = false;
-                robotController.update(0, 0, 0,
-                        0, 0, 0, false, false, false,
-                        false, false);
             } else if(elapsedTime < 5.5){
-                //make the robot go backwards to the wall
+                //AAAAARRRRRJJJJJAAAAAVV
+                //DROP THE SAMPLE NOW
+                clawClosed = false;
+                robotController.update(0, 0, 0, 0, 0, 0, false, false, false,
+                        false, false);
+            } else if(elapsedTime < 6.0){
+                //make the robot drive backwards to the observation zone
                 axial = -1;
                 robotController.update(0, 0, 0, axial, 0, 0, false, true, false,
                         false, false);
-            } else if(elapsedTime < 8.5){
-                // do what noah said and move the robot to the park zone
-                robotController.setArmMode(ArmMode.GRAB_SPECIMEN);
-                robotController.update(0, 0, 0,
-                        0, 0, 0, false, true, false,
-                        false, false);
             } else {
-                //stop
-                robotController.update(0, 0, 0,
-                        0, 0, 0, false, true, false,
-                        false, false);
+                //STOP THE ROBOT
+                //PLEASE
+//                ITS GOING TO DESTROY ME
+//                ITS WILL DESTROY THE WORLD
+//                AAAAAAA
             }
+
+
+//            if(elapsedTime < 3.0) {
+//                //move the arm motor to the point where it can place the specimen on the bar
+//                robotController.setArmMode(ArmMode.HIGH_BASKET);
+//                robotController.update(0, 0, 0,
+//                        0, lateral, 0, false, true, false,
+//                        false, false);
+//            } else if(elapsedTime < 4.0) {
+//                //move the robot forward to the observation zone
+//                robotController.setArmMode(ArmMode.HIGH_BASKET);
+//                axial = 1;
+//                robotController.update(0, 0, 0, axial, 0, 0, false, true, false,
+//                        false, false);
+//            } else if(elapsedTime < 4.5){
+//                //make the claw let go of the specimen
+//                clawClosed = false;
+//                robotController.update(0, 0, 0,
+//                        0, 0, 0, false, false, false,
+//                        false, false);
+//            } else if(elapsedTime < 5.5){
+//                //make the robot go backwards to the wall
+//                axial = -1;
+//                robotController.update(0, 0, 0, axial, 0, 0, false, true, false,
+
 
 
 
