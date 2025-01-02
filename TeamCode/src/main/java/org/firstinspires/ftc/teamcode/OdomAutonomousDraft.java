@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -38,10 +36,10 @@ public class OdomAutonomousDraft extends LinearOpMode {
 
 
     static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,2000,20,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 2600, -20, AngleUnit.DEGREES, -90);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,2600,-2600, AngleUnit.DEGREES,-90);
-    static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM, 100, -2600, AngleUnit.DEGREES, 90);
-    static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM, 100, 0, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM,2600, -20, AngleUnit.DEGREES, -90);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,2000,-2600, AngleUnit.DEGREES,-90);
+    static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,100, -2000, AngleUnit.DEGREES, 90);
+    static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM,100, 0, AngleUnit.DEGREES, 0);
 
 
     @Override
