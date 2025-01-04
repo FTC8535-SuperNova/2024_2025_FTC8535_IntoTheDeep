@@ -83,7 +83,7 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
         the tracking point the Y (strafe) odometry pod is. forward of center is a positive number,
         backwards is a negative number.
          */
-        odo.setOffsets(-84.0, -168.0); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setOffsets(80.0, 130.0); //these are tuned for 3110-0002-0001 Product Insight #1
 
         /*
         Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -114,13 +114,6 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
         //odo.recalibrateIMU();
         odo.resetPosAndIMU();
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.addData("X value", odo.getPosX());
-        telemetry.addData("Y value", odo.getPosY());
-        telemetry.addData("Angle value", odo.getYawScalar());
-        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
-        telemetry.addData("Device Scalar", odo.getYawScalar());
-        telemetry.update();
 
         // Wait for the game to start (driver presses START)
         waitForStart();
@@ -191,7 +184,13 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
             telemetry.addData("Pinpoint Frequency", odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
 
             telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
+            telemetry.addData("Status", "Initialized");
+            telemetry.addData("X value", odo.getPosX());
+            telemetry.addData("Y value", odo.getPosY());
+            telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+            telemetry.addData("Device Scalar", odo.getYawScalar());
             telemetry.update();
+
 
         }
     }}

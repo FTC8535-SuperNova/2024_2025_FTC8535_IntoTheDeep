@@ -24,6 +24,8 @@ package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.util.TypeConversion.byteArrayToInt;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.lynx.LynxI2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
@@ -140,13 +142,13 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
     //enum that captures the direction the encoders are set to
     public enum EncoderDirection{
         FORWARD,
-        REVERSED;
+        REVERSED
     }
 
     //enum that captures the kind of goBILDA odometry pods, if goBILDA pods are used
     public enum GoBildaOdometryPods {
         goBILDA_SWINGARM_POD,
-        goBILDA_4_BAR_POD;
+        goBILDA_4_BAR_POD
     }
     //enum that captures a limited scope of read data. More options may be added in future update
     public enum readData {
@@ -158,7 +160,7 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
     @param reg the register to write the int to
      @param i the integer to write to the register
      */
-    private void writeInt(final Register reg, int i){
+    private void writeInt(@NonNull final Register reg, int i){
         deviceClient.write(reg.bVal, TypeConversion.intToByteArray(i,ByteOrder.LITTLE_ENDIAN));
     }
 
