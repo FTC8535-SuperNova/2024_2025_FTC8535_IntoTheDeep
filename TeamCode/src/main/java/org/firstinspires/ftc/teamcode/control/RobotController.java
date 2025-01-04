@@ -8,10 +8,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
+
+import java.util.Locale;
 
 public class RobotController {
     private Telemetry telemetry;
-
+    GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     //initialize motors and servos
     private DcMotor shoulder_motor_1 = null;
     private DcMotor shoulder_motor_2 = null;
@@ -36,6 +42,14 @@ public class RobotController {
         this.telemetry = telemetry;
         //Connect motors to irl motors
         connectMotorsToHub(hardwareMap);
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+        odo.setOffsets(-142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+
+        if (zeroEncoders) {
+            odo.resetPosAndIMU();
+        }
 
         //set motor directions
         setMotorDirections(zeroEncoders);
@@ -44,8 +58,7 @@ public class RobotController {
 
     }
 
-    public void update(double shoulderCommand, double linearSlideCommand, double climberDrive, double axial, double lateral,
-                       double yaw, boolean isFastMode, boolean clawClosed, boolean zeroLinearSlide, boolean zeroShoulder, boolean overrideArmLowLimits) {
+    public void update(double shoulderCommand, double linearSlideCommand, double climberDrive, boolean clawClosed, boolean zeroLinearSlide, boolean zeroShoulder, boolean overrideArmLowLimits) {
 
         //reading controller inputs
         telemetry.addData("Shoulder Cmd", shoulderCommand);
@@ -61,24 +74,45 @@ public class RobotController {
             armController.zeroShoulderEncoders();
         }
 
+        //assign power to motors
+        assignMotorPowers(climberDrive, clawPos);
+
+    }
+
+    public void updateDriveCommands(double axial, double lateral,
+                                    double yaw, boolean isFastMode) {
         WheelPower wheelPower = computeWheelPower(axial, lateral, yaw, isFastMode);
 
-        //assign power to motors
-        assignMotorPowers(climberDrive, clawPos, wheelPower);
+        assignWheelPowers(wheelPower);
 
         // Show the elapsed game time and wheel power.
         updateTelemetry(wheelPower, telemetry);
 
     }
 
+    public void updateOdometry(){
+        odo.update();
+    }
+
+    public Pose2D getOdometryPosition(){
+        return odo.getPosition();
+    }
+
     private void updateTelemetry(WheelPower wheelPower, Telemetry telemetry) {
         telemetry.addData("Status", "Run Time: " + runtime);
+        telemetry.addData("X offset", odo.getXOffset());
+        telemetry.addData("Y offset", odo.getYOffset());
+        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+        telemetry.addData("Device Scalar", odo.getYawScalar());
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", wheelPower.leftFrontPower, wheelPower.rightFrontPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", wheelPower.leftBackPower, wheelPower.rightBackPower);
+        Pose2D pos = odo.getPosition();
+        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("Position", data);
         telemetry.update();
     }
 
-    private void assignMotorPowers(double climber_drive, double clawPos, WheelPower wheelPower) {
+    private void assignMotorPowers(double climber_drive, double clawPos) {
         if (climber.getCurrentPosition() < 0 || climber_drive < 0 || climberOverride) {
             climber.setPower(climber_drive);
         } else {
@@ -86,6 +120,9 @@ public class RobotController {
         }
 
         claw.setPosition(clawPos);
+    }
+
+    public void assignWheelPowers(WheelPower wheelPower) {
 
         leftFrontDrive.setPower(wheelPower.leftFrontPower);
         rightFrontDrive.setPower(wheelPower.rightFrontPower);
@@ -137,7 +174,7 @@ public class RobotController {
         return new WheelPower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
     }
 
-    private static class WheelPower {
+    public static class WheelPower {
         public final double leftFrontPower;
         public final double rightFrontPower;
         public final double leftBackPower;
@@ -157,6 +194,11 @@ public class RobotController {
             climber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
         climber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);

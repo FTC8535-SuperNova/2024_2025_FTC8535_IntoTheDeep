@@ -68,8 +68,8 @@ public class Main_Teleop extends LinearOpMode {
             boolean isFastMode = (gamepad1.right_trigger != 1);
 
             robotController.update(shoulderCommand, linearSlideCommand, climberDrive,
-                    axial, lateral, yaw, isFastMode, clawClosed, zeroLinearSlide, zeroShoulder, overrideArmLowLimits);
-
+                    clawClosed, zeroLinearSlide, zeroShoulder, overrideArmLowLimits);
+            robotController.updateDriveCommands(axial, lateral, yaw, isFastMode);
         }
 
     }

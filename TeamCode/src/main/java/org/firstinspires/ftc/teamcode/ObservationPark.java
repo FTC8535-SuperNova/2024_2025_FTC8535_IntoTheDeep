@@ -35,8 +35,9 @@ public class ObservationPark extends LinearOpMode {
 
 
             robotController.update(0, 0, 0,
-                    0, lateral, 0, false, true, false,
+                    true, false,
                     false, false);
+            robotController.updateDriveCommands(0, lateral, 0, false);
 
         }
     }
