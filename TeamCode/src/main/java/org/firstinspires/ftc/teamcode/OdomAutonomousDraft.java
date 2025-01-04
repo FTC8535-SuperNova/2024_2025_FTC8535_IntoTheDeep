@@ -35,7 +35,7 @@ public class OdomAutonomousDraft extends LinearOpMode {
     }
 
 
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,2000,20,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-400,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM,2600, -20, AngleUnit.DEGREES, -90);
     static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,2000,-2600, AngleUnit.DEGREES,-90);
     static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,100, -2000, AngleUnit.DEGREES, 90);
@@ -48,18 +48,20 @@ public class OdomAutonomousDraft extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFrontDrive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
-        leftBackDrive   = hardwareMap.get(DcMotor.class, "leftBackDrive");
-        rightBackDrive  = hardwareMap.get(DcMotor.class, "rightBackDrive");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odo.setOffsets(-142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
@@ -103,7 +105,7 @@ public class OdomAutonomousDraft extends LinearOpMode {
                      */
                     if (nav.driveTo(odo.getPosition(), TARGET_1, 0.7, 0)){
                         telemetry.addLine("at position #1!");
-                        stateMachine = OdomAutonomousDraft.StateMachine.DRIVE_TO_TARGET_2;
+                        stateMachine = StateMachine.AT_TARGET;
                     }
                     break;
                 case DRIVE_TO_TARGET_2:
