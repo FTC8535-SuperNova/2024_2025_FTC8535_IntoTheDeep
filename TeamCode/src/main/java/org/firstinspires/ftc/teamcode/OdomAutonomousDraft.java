@@ -35,7 +35,7 @@ public class OdomAutonomousDraft extends LinearOpMode {
     }
 
 
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-400,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,0,400,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM,2600, -20, AngleUnit.DEGREES, -90);
     static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,2000,-2600, AngleUnit.DEGREES,-90);
     static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,100, -2000, AngleUnit.DEGREES, 90);
@@ -66,7 +66,7 @@ public class OdomAutonomousDraft extends LinearOpMode {
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odo.setOffsets(-142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         odo.resetPosAndIMU();
 
