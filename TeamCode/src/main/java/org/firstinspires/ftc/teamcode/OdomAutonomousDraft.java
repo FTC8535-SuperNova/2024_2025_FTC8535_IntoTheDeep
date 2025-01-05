@@ -26,12 +26,14 @@ public class OdomAutonomousDraft extends LinearOpMode {
         DRIVE_TO_TARGET_5
     }
 
-
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,400,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM,2600, -20, AngleUnit.DEGREES, -90);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,2000,-2600, AngleUnit.DEGREES,-90);
-    static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,100, -2000, AngleUnit.DEGREES, 90);
-    static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM,100, 0, AngleUnit.DEGREES, 0);
+//Move 1: X: -800, Y: 0, H: 0
+//Move 2: Arm Only
+//Move 3: X: 0, Y: -1485, H: 0
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,775,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM,800, 0, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,0,-1485, AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
 
 
     @Override
@@ -67,30 +69,34 @@ public class OdomAutonomousDraft extends LinearOpMode {
                     Once driveTo returns true, it prints a telemetry line and moves the state machine forward.
                      */
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_1, 0.7, 0)){
+                        //drive to the submersible
                         telemetry.addLine("at position #1!");
                         stateMachine = StateMachine.AT_TARGET;
                     }
                     break;
                 case DRIVE_TO_TARGET_2:
-                    //drive to the second target
+                    //raise the arm
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_2, 0.7, 1)){
                         telemetry.addLine("at position #2!");
                         stateMachine = OdomAutonomousDraft.StateMachine.DRIVE_TO_TARGET_3;
                     }
                     break;
                 case DRIVE_TO_TARGET_3:
+                    //place specimen
                     if(nav.driveTo(robotController.getOdometryPosition(), TARGET_3, 0.7, 3)){
                         telemetry.addLine("at position #3!");
                         stateMachine = OdomAutonomousDraft.StateMachine.DRIVE_TO_TARGET_4;
                     }
                     break;
                 case DRIVE_TO_TARGET_4:
+                    //park in the observation zone
                     if(nav.driveTo(robotController.getOdometryPosition(),TARGET_4,0.7,1)){
                         telemetry.addLine("at position #4!");
                         stateMachine = OdomAutonomousDraft.StateMachine.DRIVE_TO_TARGET_5;
                     }
                     break;
                 case DRIVE_TO_TARGET_5:
+                    //ummm... do nothing
                     if(nav.driveTo(robotController.getOdometryPosition(),TARGET_5,0.7,1)){
                         telemetry.addLine("There! :)");
                         stateMachine = OdomAutonomousDraft.StateMachine.AT_TARGET;
