@@ -81,12 +81,10 @@ public class RobotController {
 
     public void updateDriveCommands(double axial, double lateral,
                                     double yaw, boolean isFastMode) {
-        WheelPower wheelPower = computeWheelPower(axial, lateral, yaw, isFastMode);
-
-        assignWheelPowers(wheelPower);
+        assignWheelPowers(computeWheelPower(axial, lateral, yaw, isFastMode));
 
         // Show the elapsed game time and wheel power.
-        updateTelemetry(wheelPower, telemetry);
+        updateTelemetry(telemetry);
 
     }
 
@@ -98,14 +96,12 @@ public class RobotController {
         return odo.getPosition();
     }
 
-    private void updateTelemetry(WheelPower wheelPower, Telemetry telemetry) {
+    private void updateTelemetry(Telemetry telemetry) {
         telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("X offset", odo.getXOffset());
         telemetry.addData("Y offset", odo.getYOffset());
         telemetry.addData("Device Version Number:", odo.getDeviceVersion());
         telemetry.addData("Device Scalar", odo.getYawScalar());
-        telemetry.addData("Front left/Right", "%4.2f, %4.2f", wheelPower.leftFrontPower, wheelPower.rightFrontPower);
-        telemetry.addData("Back  left/Right", "%4.2f, %4.2f", wheelPower.leftBackPower, wheelPower.rightBackPower);
         Pose2D pos = odo.getPosition();
         String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
         telemetry.addData("Position", data);

@@ -29,7 +29,7 @@ public class OdomAutonomousDraft extends LinearOpMode {
 //Move 1: X: -800, Y: 0, H: 0
 //Move 2: Arm Only
 //Move 3: X: 0, Y: -1485, H: 0
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,775,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM,800, 0, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,0,-1485, AngleUnit.DEGREES,0);
     static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);

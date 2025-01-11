@@ -22,6 +22,7 @@ public class Main_Teleop extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+            robotController.updateOdometry();
 
             //reading controller inputs
             double shoulderCommand = -1 * gamepad2.left_stick_y;
