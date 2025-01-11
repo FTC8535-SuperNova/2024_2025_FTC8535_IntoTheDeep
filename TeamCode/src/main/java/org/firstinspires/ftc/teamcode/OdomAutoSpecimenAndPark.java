@@ -32,6 +32,8 @@ public class OdomAutoSpecimenAndPark extends LinearOpMode {
     static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_OBSERVATION = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
 
+    private double shoulderCommand = 0;
+    private boolean clawClosed = true;
 
     @Override
     public void runOpMode() {
@@ -62,9 +64,8 @@ public class OdomAutoSpecimenAndPark extends LinearOpMode {
                     break;
                 case RAISE_ARM_HIGH_SPECIMEN:
                     robotController.setArmMode(ArmMode.HIGH_SPECIMEN);
-                    robotController.update(0, 0, 0,
-                            true, false,
-                            false, false);
+                    shoulderCommand = 0;
+                    clawClosed = true;
                     if (runtime.seconds() >= 1.0){
                         stateMachine = StateMachine.DRIVE_TO_HIGH_SPECIMEN;
                     }
@@ -75,7 +76,9 @@ public class OdomAutoSpecimenAndPark extends LinearOpMode {
                     the robot has reached the target, and has been there for (holdTime) seconds.
                     Once driveTo returns true, it prints a telemetry line and moves the state machine forward.
                      */
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_HIGH_SPECIMEN, 0.7, 0)){
+                    shoulderCommand = 0;
+                    clawClosed = true;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_HIGH_SPECIMEN, 0.45, 0)){
                         //drive to the submersible
                         telemetry.addLine("at position #1!");
                         stateMachine = StateMachine.DELIVER_SPECIMEN;
@@ -84,9 +87,8 @@ public class OdomAutoSpecimenAndPark extends LinearOpMode {
                     break;
                 case DELIVER_SPECIMEN:
                     robotController.setArmMode(ArmMode.DRIVER_CONTROL);
-                    robotController.update(-1, 0, 0,
-                            true, false,
-                            false, false);
+                    shoulderCommand = -1;
+                    clawClosed = true;
                     if (runtime.seconds() >= 0.8) {
                         stateMachine = StateMachine.OPEN_CLAW;
                         runtime.reset();
@@ -94,9 +96,8 @@ public class OdomAutoSpecimenAndPark extends LinearOpMode {
                     break;
                 case OPEN_CLAW:
                     //make the claw let go of the specimen
-                    robotController.update(0, 0, 0,
-                            false, false,
-                            false, false);
+                    shoulderCommand = 0;
+                    clawClosed = false;
                     robotController.updateDriveCommands(0, 0, 0, false);
                     if (runtime.seconds() >= 0.5) {
                         stateMachine = StateMachine.DRIVE_TO_OBSERVATION_ZONE;
@@ -105,7 +106,9 @@ public class OdomAutoSpecimenAndPark extends LinearOpMode {
                     break;
                 case DRIVE_TO_OBSERVATION_ZONE:
                     //raise the arm
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_OBSERVATION, 0.7, 1)){
+                    shoulderCommand = 0;
+                    clawClosed = false;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_OBSERVATION, 0.7, 0)){
                         telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.AT_TARGET;
                     }
@@ -113,6 +116,9 @@ public class OdomAutoSpecimenAndPark extends LinearOpMode {
 
             }
 
+            robotController.update(shoulderCommand, 0, 0,
+                    clawClosed, false,
+                    false, false);
             if (stateMachine == StateMachine.AT_TARGET){
                 RobotController.WheelPower wheelPower = new RobotController.WheelPower(0,0,0,0);
                 robotController.assignWheelPowers(wheelPower);
