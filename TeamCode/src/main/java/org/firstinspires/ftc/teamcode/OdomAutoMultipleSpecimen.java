@@ -34,6 +34,9 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
         DRIVE_TO_SPEC2_STEP2,
         DRIVE_TO_SPEC2_STEP3,
         DRIVE_TO_OBSERVATION_ZONE,
+        DRIVE_TO_SPEC3_STEP1,
+        DRIVE_TO_SPEC3_STEP2,
+        DRIVE_TO_SPEC3_STEP3,
     }
 
     static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
@@ -44,7 +47,10 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
     static final Pose2D TARGET_SPEC1_STEP4 = new Pose2D(DistanceUnit.MM,100, -1200, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC2_STEP1 = new Pose2D(DistanceUnit.MM,1300, -1200, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC2_STEP2 = new Pose2D(DistanceUnit.MM,1300, -1300, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_SPEC2_STEP3 = new Pose2D(DistanceUnit.MM,100, -1300, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC2_STEP3 = new Pose2D(DistanceUnit.MM,350, -1300, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC3_STEP1 = new Pose2D(DistanceUnit.MM,1550, -1200, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC3_STEP2 = new Pose2D(DistanceUnit.MM,1550, -1300, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC3_STEP3 = new Pose2D(DistanceUnit.MM,350, -1300, AngleUnit.DEGREES, 0);
 
     private double shoulderCommand = 0;
     private boolean clawClosed = true;
@@ -178,10 +184,35 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                     clawClosed = false;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP3, 0.7, 0)){
                         telemetry.addLine("at position #2!");
-                        stateMachine = StateMachine.AT_TARGET;
+                        stateMachine = StateMachine.DRIVE_TO_SPEC3_STEP1;
                     }
                     break;
-
+                case DRIVE_TO_SPEC3_STEP1:
+                    //raise the arm
+                    shoulderCommand = 0;
+                    clawClosed = false;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC3_STEP1, 0.7, 0)){
+                        telemetry.addLine("at position #2!");
+                        stateMachine = StateMachine.DRIVE_TO_SPEC3_STEP2;
+                    }
+                    break;
+                case DRIVE_TO_SPEC3_STEP2:
+                    //raise the arm
+                    shoulderCommand = 0;
+                    clawClosed = false;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC3_STEP2, 0.7, 0)){
+                        telemetry.addLine("at position #2!");
+                        stateMachine = StateMachine.DRIVE_TO_SPEC3_STEP3;
+                    }
+                    break;
+                case DRIVE_TO_SPEC3_STEP3:
+                    //raise the arm
+                    shoulderCommand = 0;
+                    clawClosed = false;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC3_STEP3, 0.7, 0)){
+                        telemetry.addLine("at position #2!");
+                        stateMachine = StateMachine.AT_TARGET;
+                    }
             }
 
             robotController.update(shoulderCommand, 0, 0,
