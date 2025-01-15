@@ -2,39 +2,38 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.control.ArmMode;
 import org.firstinspires.ftc.teamcode.control.RobotController;
 
-@Autonomous(name="OdomAutonomousDraft", group="OdomAutonomous")
+@Autonomous(name="OdomAutoSpecimenAndPark", group="OdomAutonomous", preselectTeleOp = "Main_Teleop")
 //@Disabled
 
-public class OdomAutonomousDraft extends LinearOpMode {
-   RobotController robotController = new RobotController();
+public class OdomAutoSpecimenAndPark extends LinearOpMode {
+    RobotController robotController = new RobotController();
+    private final ElapsedTime runtime = new ElapsedTime();
 
     DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
 
     enum StateMachine {
         WAITING_FOR_START,
         AT_TARGET,
-        DRIVE_TO_TARGET_1,
-        DRIVE_TO_TARGET_2,
-        DRIVE_TO_TARGET_3,
-        DRIVE_TO_TARGET_4,
-        DRIVE_TO_TARGET_5
+        RAISE_ARM_HIGH_SPECIMEN,
+        DRIVE_TO_HIGH_SPECIMEN,
+        DELIVER_SPECIMEN,
+        OPEN_CLAW,
+        DRIVE_TO_OBSERVATION_ZONE
     }
 
-//Move 1: X: -800, Y: 0, H: 0
-//Move 2: Arm Only
-//Move 3: X: 0, Y: -1485, H: 0
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM,800, 0, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,0,-1485, AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_OBSERVATION = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
 
+    private double shoulderCommand = 0;
+    private boolean clawClosed = true;
 
     @Override
     public void runOpMode() {
@@ -60,50 +59,66 @@ public class OdomAutonomousDraft extends LinearOpMode {
             switch (stateMachine){
                 case WAITING_FOR_START:
                     //the first step in the autonomous
-                    stateMachine = OdomAutonomousDraft.StateMachine.DRIVE_TO_TARGET_1;
+                    stateMachine = StateMachine.RAISE_ARM_HIGH_SPECIMEN;
+                    runtime.reset();
                     break;
-                case DRIVE_TO_TARGET_1:
+                case RAISE_ARM_HIGH_SPECIMEN:
+                    robotController.setArmMode(ArmMode.HIGH_SPECIMEN);
+                    shoulderCommand = 0;
+                    clawClosed = true;
+                    if (runtime.seconds() >= 1.0){
+                        stateMachine = StateMachine.DRIVE_TO_HIGH_SPECIMEN;
+                    }
+                    break;
+                case DRIVE_TO_HIGH_SPECIMEN:
                     /*
                     drive the robot to the first target, the nav.driveTo function will return true once
                     the robot has reached the target, and has been there for (holdTime) seconds.
                     Once driveTo returns true, it prints a telemetry line and moves the state machine forward.
                      */
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_1, 0.7, 0)){
+                    shoulderCommand = 0;
+                    clawClosed = true;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_HIGH_SPECIMEN, 0.45, 0)){
                         //drive to the submersible
                         telemetry.addLine("at position #1!");
+                        stateMachine = StateMachine.DELIVER_SPECIMEN;
+                        runtime.reset();
+                    }
+                    break;
+                case DELIVER_SPECIMEN:
+                    robotController.setArmMode(ArmMode.DRIVER_CONTROL);
+                    shoulderCommand = -1;
+                    clawClosed = true;
+                    if (runtime.seconds() >= 0.5) {
+                        stateMachine = StateMachine.OPEN_CLAW;
+                        runtime.reset();
+                    }
+                    break;
+                case OPEN_CLAW:
+                    //make the claw let go of the specimen
+                    shoulderCommand = 0;
+                    clawClosed = false;
+                    robotController.updateDriveCommands(0, 0, 0, false);
+                    if (runtime.seconds() >= 0.5) {
+                        stateMachine = StateMachine.DRIVE_TO_OBSERVATION_ZONE;
+                        runtime.reset();
+                    }
+                    break;
+                case DRIVE_TO_OBSERVATION_ZONE:
+                    //raise the arm
+                    shoulderCommand = 0;
+                    clawClosed = false;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_OBSERVATION, 0.7, 0)){
+                        telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.AT_TARGET;
                     }
                     break;
-                case DRIVE_TO_TARGET_2:
-                    //raise the arm
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_2, 0.7, 1)){
-                        telemetry.addLine("at position #2!");
-                        stateMachine = OdomAutonomousDraft.StateMachine.DRIVE_TO_TARGET_3;
-                    }
-                    break;
-                case DRIVE_TO_TARGET_3:
-                    //place specimen
-                    if(nav.driveTo(robotController.getOdometryPosition(), TARGET_3, 0.7, 3)){
-                        telemetry.addLine("at position #3!");
-                        stateMachine = OdomAutonomousDraft.StateMachine.DRIVE_TO_TARGET_4;
-                    }
-                    break;
-                case DRIVE_TO_TARGET_4:
-                    //park in the observation zone
-                    if(nav.driveTo(robotController.getOdometryPosition(),TARGET_4,0.7,1)){
-                        telemetry.addLine("at position #4!");
-                        stateMachine = OdomAutonomousDraft.StateMachine.DRIVE_TO_TARGET_5;
-                    }
-                    break;
-                case DRIVE_TO_TARGET_5:
-                    //ummm... do nothing
-                    if(nav.driveTo(robotController.getOdometryPosition(),TARGET_5,0.7,1)){
-                        telemetry.addLine("There! :)");
-                        stateMachine = OdomAutonomousDraft.StateMachine.AT_TARGET;
-                    }
-                    break;
+
             }
 
+            robotController.update(shoulderCommand, 0, 0,
+                    clawClosed, false,
+                    false, false);
             if (stateMachine == StateMachine.AT_TARGET){
                 RobotController.WheelPower wheelPower = new RobotController.WheelPower(0,0,0,0);
                 robotController.assignWheelPowers(wheelPower);

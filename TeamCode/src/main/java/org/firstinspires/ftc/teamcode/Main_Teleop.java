@@ -22,6 +22,7 @@ public class Main_Teleop extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+            robotController.updateOdometry();
 
             //reading controller inputs
             double shoulderCommand = -1 * gamepad2.left_stick_y;
@@ -68,8 +69,8 @@ public class Main_Teleop extends LinearOpMode {
             boolean isFastMode = (gamepad1.right_trigger != 1);
 
             robotController.update(shoulderCommand, linearSlideCommand, climberDrive,
-                    axial, lateral, yaw, isFastMode, clawClosed, zeroLinearSlide, zeroShoulder, overrideArmLowLimits);
-
+                    clawClosed, zeroLinearSlide, zeroShoulder, overrideArmLowLimits);
+            robotController.updateDriveCommands(axial, lateral, yaw, isFastMode);
         }
 
     }
