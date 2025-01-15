@@ -223,6 +223,7 @@ public class RobotController {
         linear_slide = hardwareMap.get(DcMotor.class, "linear_slide");
 
         claw = hardwareMap.get(Servo.class, "claw");
+        claw.setPosition(1.0);
 
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
