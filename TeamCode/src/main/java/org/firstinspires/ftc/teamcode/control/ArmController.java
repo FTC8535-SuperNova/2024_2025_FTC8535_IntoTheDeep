@@ -11,7 +11,7 @@ public class ArmController {
     public static final int GRAB_SPECIMEN_LINEAR_SLIDE_POS = 250;
     public static final int GRAB_SPECIMEN_SHOULDER_POS = 515;
     public static final int HIGH_SPECIMEN_LINEAR_SLIDE_POS = 100;
-    public static final int HIGH_SPECIMEN_SHOULDER_POS = 1445;
+    public static final int HIGH_SPECIMEN_SHOULDER_POS = 1425;
     public static final int HIGH_BASKET_LINEAR_SLIDE_POS = 2700;
     public static final int HIGH_BASKET_SHOULDER_POS = 1425;
 

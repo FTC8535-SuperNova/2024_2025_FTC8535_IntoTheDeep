@@ -55,6 +55,7 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
     static final Pose2D TARGET_SPEC3_STEP4 = new Pose2D(DistanceUnit.MM,350, -1300, AngleUnit.DEGREES, 0);
 
     private double shoulderCommand = 0;
+    private double linearSlideCmd = 0;
     private boolean clawClosed = true;
 
     @Override
@@ -136,18 +137,16 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                     }
                     break;
                 case DRIVE_TO_SPEC1_STEP2:
-                    //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = false;
+                    //lower arm
+                    shoulderCommand = -1;
+                    linearSlideCmd = -1;
+                    clawClosed = true;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP2, 0.7, 0)){
                         telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP3;
                     }
                     break;
                 case DRIVE_TO_SPEC1_STEP3:
-                    //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = false;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP3, 0.7, 0)){
                         telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP4;
@@ -155,8 +154,6 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                     break;
                 case DRIVE_TO_SPEC1_STEP4:
                     //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = false;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP4, 0.7, 0)){
                         telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC2_STEP1;
@@ -164,8 +161,6 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                     break;
                 case DRIVE_TO_SPEC2_STEP1:
                     //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = false;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP1, 0.7, 0)){
                         telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC2_STEP2;
@@ -173,8 +168,6 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                     break;
                 case DRIVE_TO_SPEC2_STEP2:
                     //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = false;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP2, 0.7, 0)){
                         telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC2_STEP3;
@@ -183,7 +176,8 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                 case DRIVE_TO_SPEC2_STEP3:
                     //raise the arm
                     shoulderCommand = 0;
-                    clawClosed = false;
+                    linearSlideCmd = 0;
+                    clawClosed = true;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP3, 0.7, 0)){
                         telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC3_STEP1;
@@ -225,7 +219,7 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                         stateMachine = StateMachine.AT_TARGET;
             }
 
-            robotController.update(shoulderCommand, 0, 0,
+            robotController.update(shoulderCommand, linearSlideCmd, 0,
                     clawClosed, false,
                     false, false);
             if (stateMachine == StateMachine.AT_TARGET){
