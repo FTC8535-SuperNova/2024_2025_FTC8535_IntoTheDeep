@@ -34,9 +34,12 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
         DRIVE_TO_SPEC2_STEP2,
         DRIVE_TO_SPEC2_STEP3,
         DRIVE_TO_OBSERVATION_ZONE,
+        DRIVE_TO_SPEC3_STEP1,
+        DRIVE_TO_SPEC3_STEP2,
+        DRIVE_TO_SPEC3_STEP3
     }
 
-    static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,0,750,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_OBSERVATION = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP1 = new Pose2D(DistanceUnit.MM,400, -950, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP2 = new Pose2D(DistanceUnit.MM,1300, -950, AngleUnit.DEGREES, 0);
@@ -44,7 +47,10 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
     static final Pose2D TARGET_SPEC1_STEP4 = new Pose2D(DistanceUnit.MM,100, -1200, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC2_STEP1 = new Pose2D(DistanceUnit.MM,1300, -1200, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC2_STEP2 = new Pose2D(DistanceUnit.MM,1300, -1300, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_SPEC2_STEP3 = new Pose2D(DistanceUnit.MM,100, -1300, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC2_STEP3 = new Pose2D(DistanceUnit.MM,350, -1300, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC3_STEP1 = new Pose2D(DistanceUnit.MM,1550, -1200, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC3_STEP2 = new Pose2D(DistanceUnit.MM,1550, -1300, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC3_STEP3 = new Pose2D(DistanceUnit.MM,350, -1300, AngleUnit.DEGREES, 0);
 
     private double shoulderCommand = 0;
     private double linearSlideCmd = 0;
@@ -94,8 +100,6 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                     shoulderCommand = 0;
                     clawClosed = true;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_HIGH_SPECIMEN, 0.45, 0)){
-                        //drive to the submersible
-                        telemetry.addLine("at position #1!");
                         stateMachine = StateMachine.DELIVER_SPECIMEN;
                         runtime.reset();
                     }
@@ -124,7 +128,6 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                     shoulderCommand = 0;
                     clawClosed = false;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP1, 0.7, 0)){
-                        telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP2;
                     }
                     break;
@@ -134,48 +137,52 @@ public class OdomAutoMultipleSpecimen extends LinearOpMode {
                     linearSlideCmd = -1;
                     clawClosed = true;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP2, 0.7, 0)){
-                        telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP3;
                     }
                     break;
                 case DRIVE_TO_SPEC1_STEP3:
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP3, 0.7, 0)){
-                        telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP4;
                     }
                     break;
                 case DRIVE_TO_SPEC1_STEP4:
-                    //raise the arm
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP4, 0.7, 0)){
-                        telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC2_STEP1;
                     }
                     break;
                 case DRIVE_TO_SPEC2_STEP1:
-                    //raise the arm
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP1, 0.7, 0)){
-                        telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC2_STEP2;
                     }
                     break;
                 case DRIVE_TO_SPEC2_STEP2:
-                    //raise the arm
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP2, 0.7, 0)){
-                        telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_SPEC2_STEP3;
                     }
                     break;
                 case DRIVE_TO_SPEC2_STEP3:
-                    //raise the arm
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP3, 0.7, 0)){
+                        stateMachine = StateMachine.DRIVE_TO_SPEC3_STEP1;
+                    }
+                    break;
+                case DRIVE_TO_SPEC3_STEP1:
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC3_STEP1, 0.7, 0)){
+                        stateMachine = StateMachine.DRIVE_TO_SPEC3_STEP2;
+                    }
+                    break;
+                case DRIVE_TO_SPEC3_STEP2:
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC3_STEP2, 0.7, 0)){
+                        stateMachine = StateMachine.DRIVE_TO_SPEC3_STEP3;
+                    }
+                    break;
+                case DRIVE_TO_SPEC3_STEP3:
                     shoulderCommand = 0;
                     linearSlideCmd = 0;
                     clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP3, 0.7, 0)){
-                        telemetry.addLine("at position #2!");
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC3_STEP3, 0.7, 0)){
                         stateMachine = StateMachine.AT_TARGET;
                     }
                     break;
-
             }
 
             robotController.update(shoulderCommand, linearSlideCmd, 0,
