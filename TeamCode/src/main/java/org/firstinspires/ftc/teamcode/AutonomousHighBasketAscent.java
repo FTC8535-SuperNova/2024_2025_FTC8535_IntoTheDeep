@@ -69,7 +69,7 @@ public class AutonomousHighBasketAscent extends LinearOpMode {
                 robotController.update(0, 0, 0,
                         true, false,
                         false, false);
-                robotController.updateDriveCommands(axial, 0, 0, false);
+                robotController.updateDriveCommands(0, 0, 0, false);
             } else if(elapsedTime < 13.1){
                 // do what noah said and move the robot to the park zone
                 lateral = 1;
