@@ -14,7 +14,7 @@ public class ArmController {
     public static final int HIGH_SPECIMEN_SHOULDER_POS = 1425;
     public static final int HIGH_BASKET_LINEAR_SLIDE_POS = 2700;
     public static final int HIGH_BASKET_SHOULDER_POS = 1425;
-    public static final int AUTO_ASCENT_LINEAR_SLIDE_POS = 2100;
+    public static final int AUTO_ASCENT_LINEAR_SLIDE_POS = 1000;
     public static final int AUTO_ASCENT_SHOULDER_POS = 825;
 
     final int SHOULDER_MAX_LIMIT = 1600;
