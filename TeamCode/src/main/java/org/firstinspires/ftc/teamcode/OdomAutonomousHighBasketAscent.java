@@ -25,16 +25,19 @@ public class OdomAutonomousHighBasketAscent extends LinearOpMode {
         RAISE_ARM_HIGH_BASKET,
         MOVE_TO_BASKET,
         OPEN_CLAW,
-        TURN,
+        MOVE_BACK,
         STRAFE,
+        TURN,
         TARGET_RUNG,
         EXTEND_ARM
 
     }
 
-    static final Pose2D TARGET_HIGH_BASKET = new Pose2D(DistanceUnit.MM,1060,50,AngleUnit.DEGREES,0);
-    static final Pose2D TURN = new Pose2D(DistanceUnit.MM,1000, 50, AngleUnit.DEGREES, -90);
-    static final Pose2D TARGET_RUNG = new Pose2D(DistanceUnit.MM,1000, 1500, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_HIGH_BASKET = new Pose2D(DistanceUnit.MM,350,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_MOVE_BACK = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_STRAFE = new Pose2D(DistanceUnit.MM,0, -1400, AngleUnit.DEGREES, 0);
+    static final Pose2D TURN = new Pose2D(DistanceUnit.MM,535, -1400, AngleUnit.DEGREES, -175);
+    static final Pose2D TARGET_RUNG = new Pose2D(DistanceUnit.MM,300, -1400, AngleUnit.DEGREES, -175);
 
 
     private double shoulderCommand = 0;
@@ -72,7 +75,7 @@ public class OdomAutonomousHighBasketAscent extends LinearOpMode {
                     robotController.setArmMode(ArmMode.HIGH_BASKET);
                     shoulderCommand = 0;
                     clawClosed = true;
-                    if (runtime.seconds() >= 1.0){
+                    if (runtime.seconds() >= 2.0){
                         stateMachine = StateMachine.MOVE_TO_BASKET;
                     }
                     break;
@@ -84,7 +87,7 @@ public class OdomAutonomousHighBasketAscent extends LinearOpMode {
                      */
                     shoulderCommand = 0;
                     clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_HIGH_BASKET, 0.45, 0)){
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_HIGH_BASKET, 0.3, 0)){
                         stateMachine = StateMachine.OPEN_CLAW;
                         runtime.reset();
                     }
@@ -94,33 +97,48 @@ public class OdomAutonomousHighBasketAscent extends LinearOpMode {
                     shoulderCommand = 0;
                     clawClosed = false;
                     if (runtime.seconds() >= 0.5) {
-                        stateMachine = StateMachine.TURN;
+                        stateMachine = StateMachine.MOVE_BACK;
                         runtime.reset();
+                    }
+                    break;
+                case MOVE_BACK:
+                    shoulderCommand = 0;
+                    clawClosed = true;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_MOVE_BACK, 0.5, 0)){
+                        stateMachine = StateMachine.STRAFE;
+                    }
+                    break;
+                case STRAFE:
+                    //raise the arm
+                    robotController.setArmMode(ArmMode.HIGH_SPECIMEN);
+                    shoulderCommand = 0;
+                    clawClosed = true;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_STRAFE, 0.5, 0)){
+                        stateMachine = StateMachine.TURN;
                     }
                     break;
                 case TURN:
                     //make the claw let go of the specimen
                     shoulderCommand = 0;
                     clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), TURN, 0.7, 0)){
-                        stateMachine = StateMachine.STRAFE;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TURN, 0.5, 1.0 )){
+                        stateMachine = StateMachine.TARGET_RUNG;
                     }
                     break;
-                case STRAFE:
-                    //raise the arm
+                case TARGET_RUNG:
+                    //make the claw let go of the specimen
                     shoulderCommand = 0;
-                    clawClosed = false;
+                    clawClosed = true;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_RUNG, 0.7, 0)){
                         stateMachine = StateMachine.EXTEND_ARM;
+                        runtime.reset();
                     }
                     break;
                 case EXTEND_ARM:
                     //lower arm
-                    shoulderCommand = -1;
-                    linearSlideCmd = 1;
+                    robotController.setArmMode(ArmMode.AUTO_ASCENT);
                     clawClosed = true;
-                    runtime.reset();
-                    if (runtime.seconds() >= 1.0){
+                    if (runtime.seconds() >= 0.2){
                         stateMachine = StateMachine.AT_TARGET;
                     }
                     break;
