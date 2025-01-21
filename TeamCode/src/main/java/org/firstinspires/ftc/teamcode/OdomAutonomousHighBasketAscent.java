@@ -35,9 +35,9 @@ public class OdomAutonomousHighBasketAscent extends LinearOpMode {
 
     static final Pose2D TARGET_HIGH_BASKET = new Pose2D(DistanceUnit.MM,350,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_MOVE_BACK = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_STRAFE = new Pose2D(DistanceUnit.MM,0, -1400, AngleUnit.DEGREES, 0);
-    static final Pose2D TURN = new Pose2D(DistanceUnit.MM,535, -1400, AngleUnit.DEGREES, -175);
-    static final Pose2D TARGET_RUNG = new Pose2D(DistanceUnit.MM,300, -1400, AngleUnit.DEGREES, -175);
+    static final Pose2D TARGET_STRAFE = new Pose2D(DistanceUnit.MM,0, -1300, AngleUnit.DEGREES, 0);
+    static final Pose2D TURN = new Pose2D(DistanceUnit.MM,0, -1300, AngleUnit.DEGREES, -175);
+    static final Pose2D TARGET_RUNG = new Pose2D(DistanceUnit.MM,-235, -1300, AngleUnit.DEGREES, -175);
 
 
     private double shoulderCommand = 0;
