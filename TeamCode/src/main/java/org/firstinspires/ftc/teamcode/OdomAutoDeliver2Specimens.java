@@ -52,12 +52,10 @@ public class OdomAutoDeliver2Specimens extends LinearOpMode {
 
     static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_OBSERVATION = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_MOVE_SPEC0 = new Pose2D(DistanceUnit.MM,820, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_GRAB_SPEC0 = new Pose2D(DistanceUnit.MM,620, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_PRE_DELIVER0 = new Pose2D(DistanceUnit.MM,820, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D DELIVER_POS0 = new Pose2D(DistanceUnit.MM,300, -30, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_TURN = new Pose2D(DistanceUnit.MM,300, -30, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_HIGH_SPECIMEN0 = new Pose2D(DistanceUnit.MM,800,-30,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_MOVE_SPEC0 = new Pose2D(DistanceUnit.MM,300, -1000, AngleUnit.DEGREES, 175);
+    static final Pose2D TARGET_GRAB_SPEC0 = new Pose2D(DistanceUnit.MM,166, -1000, AngleUnit.DEGREES, 175);
+    static final Pose2D TARGET_PRE_DELIVER0 = new Pose2D(DistanceUnit.MM,400, -30, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_HIGH_SPECIMEN0 = new Pose2D(DistanceUnit.MM,760,-30,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_SPEC1_STEP1 = new Pose2D(DistanceUnit.MM,400, -950, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP2 = new Pose2D(DistanceUnit.MM,1300, -950, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP3 = new Pose2D(DistanceUnit.MM,1300, -1200, AngleUnit.DEGREES, 0);
@@ -183,22 +181,6 @@ public class OdomAutoDeliver2Specimens extends LinearOpMode {
                     shoulderCommand = 0;
                     clawClosed = true;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_PRE_DELIVER0, 0.7, 0)){
-                        stateMachine = StateMachine.GO_TO_DELIVER_POS;
-                    }
-                    break;
-                case GO_TO_DELIVER_POS:
-                    //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), DELIVER_POS0, 0.7, 0)){
-                        stateMachine = StateMachine.TURN;
-                    }
-                    break;
-                case TURN:
-                    //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_TURN, 0.7, 0)){
                         stateMachine = StateMachine.DRIVE_TO_HIGH_SPECIMEN0;
                     }
                     break;

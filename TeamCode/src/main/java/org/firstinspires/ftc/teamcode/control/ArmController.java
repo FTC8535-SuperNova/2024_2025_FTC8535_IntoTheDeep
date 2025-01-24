@@ -9,7 +9,7 @@ public class ArmController {
     static final int SHOULDER_POS_INCREMENT = 45;
     static final int LINEAR_SLIDE_POS_INCREMENT = 100;
     public static final int GRAB_SPECIMEN_LINEAR_SLIDE_POS = 250;
-    public static final int GRAB_SPECIMEN_SHOULDER_POS = 515;
+    public static final int GRAB_SPECIMEN_SHOULDER_POS = 550;
     public static final int HIGH_SPECIMEN_LINEAR_SLIDE_POS = 100;
     public static final int HIGH_SPECIMEN_SHOULDER_POS = 1425;
     public static final int HIGH_BASKET_LINEAR_SLIDE_POS = 2700;
@@ -21,8 +21,8 @@ public class ArmController {
     final int SHOULDER_BOUNDARY_LIMIT = 1000;
     int shoulder_min_limit = 0;
     final double SHOULDER_KP = 0.0025;
-    final double SHOULDER_KI = 0.0001;
-    final double SHOULDER_KD = 0.00001;
+    final double SHOULDER_KI = 0.0002;
+    final double SHOULDER_KD = 0.00002;
 
     final int LINEAR_SLIDE_MAX_LIMIT = 3100;
     int lin_slide_max_limit = LINEAR_SLIDE_MAX_LIMIT;
