@@ -33,24 +33,22 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
         LIFT_ARM_SPEC0,
         GO_TO_PRE_DELIVER_POS,
         GO_TO_DELIVER_POS,
-        TURN_SPEC0,
         DRIVE_TO_HIGH_SPECIMEN0,
         DELIVER_SPECIMEN0,
         OPEN_CLAW0,
-        //MOVE_BACK_TO_START,
         DRIVE_TO_SPEC1_STEP1,
         DRIVE_TO_SPEC1_STEP2,
         DRIVE_TO_SPEC1_STEP3,
         DRIVE_TO_SPEC1_STEP4,
-        DRIVE_OUT_OF_OBSERVATION,
+        PRE_MOVE_TO_SPECA,
+        MOVE_TO_SPECA,
         CLOSE_CLAW_SPECA,
         LIFT_ARM_SPECA,
-        GO_TO_PRE_DELIVER_POS2,
-        GO_TO_DELIVER_POS2,
-        TURN_SPECA,
+        GO_TO_PRE_DELIVER_POSA,
+        GO_TO_DELIVER_POSA,
         DRIVE_TO_HIGH_SPECIMENA,
         DELIVER_SPECIMENA,
-        OPEN_CLAW02,
+        OPEN_CLAWA,
         DRIVE_TO_SPEC2_STEP1,
         DRIVE_TO_SPEC2_STEP2,
         DRIVE_TO_SPEC2_STEP3,
@@ -61,23 +59,18 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
     }
 
     static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_OBSERVATION = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_MOVE_SPEC0 = new Pose2D(DistanceUnit.MM,820, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_GRAB_SPEC0 = new Pose2D(DistanceUnit.MM,620, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_PRE_DELIVER0 = new Pose2D(DistanceUnit.MM,820, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D DELIVER_POS0 = new Pose2D(DistanceUnit.MM,300, -30, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_TURN_SPEC0 = new Pose2D(DistanceUnit.MM,300, -30, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_HIGH_SPECIMEN0 = new Pose2D(DistanceUnit.MM,800,-30,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_MOVE_SPEC0 = new Pose2D(DistanceUnit.MM,300, -1000, AngleUnit.DEGREES, 175);
+    static final Pose2D TARGET_GRAB_SPEC0 = new Pose2D(DistanceUnit.MM,166, -1000, AngleUnit.DEGREES, 175);
+    static final Pose2D TARGET_PRE_DELIVER0 = new Pose2D(DistanceUnit.MM,400, -30, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_HIGH_SPECIMEN0 = new Pose2D(DistanceUnit.MM,770,-30,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_SPEC1_STEP1 = new Pose2D(DistanceUnit.MM,400, -950, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP2 = new Pose2D(DistanceUnit.MM,1300, -950, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP3 = new Pose2D(DistanceUnit.MM,1300, -1200, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_SPEC1_STEP4 = new Pose2D(DistanceUnit.MM,100, -1200, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_MOVE_SPECA = new Pose2D(DistanceUnit.MM,820, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_GRAB_SPECA = new Pose2D(DistanceUnit.MM,620, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_PRE_DELIVERA = new Pose2D(DistanceUnit.MM,820, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D DELIVER_POSA = new Pose2D(DistanceUnit.MM,300, -60, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_TURN_SPECA = new Pose2D(DistanceUnit.MM,820, -1000, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_HIGH_SPECIMENA = new Pose2D(DistanceUnit.MM,800,-60,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_SPEC1_STEP4 = new Pose2D(DistanceUnit.MM,200, -1200, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_MOVE_SPECA = new Pose2D(DistanceUnit.MM,300, -1000, AngleUnit.DEGREES, 175);
+    static final Pose2D TARGET_GRAB_SPECA = new Pose2D(DistanceUnit.MM,166, -1000, AngleUnit.DEGREES, 175);
+    static final Pose2D TARGET_PRE_DELIVERA = new Pose2D(DistanceUnit.MM,400, -60, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_HIGH_SPECIMENA = new Pose2D(DistanceUnit.MM,780,-60,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_SPEC2_STEP1 = new Pose2D(DistanceUnit.MM,1300, -1200, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC2_STEP2 = new Pose2D(DistanceUnit.MM,1300, -1300, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC2_STEP3 = new Pose2D(DistanceUnit.MM,350, -1300, AngleUnit.DEGREES, 0);
@@ -151,9 +144,34 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
                     shoulderCommand = 0;
                     clawClosed = false;
                     robotController.updateDriveCommands(0, 0, 0, false);
-                    if (runtime.seconds() >= 0.5) {
-                        stateMachine = StateMachine.PRE_MOVE_TO_SPEC0;
+                    if (runtime.seconds() >= 0.25) {
+                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP1;
                         runtime.reset();
+                    }
+                    break;
+                case DRIVE_TO_SPEC1_STEP1:
+                    //raise the arm
+                    shoulderCommand = 0;
+                    clawClosed = false;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP1, 0.8, 0)){
+                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP2;
+                    }
+                    break;
+                case DRIVE_TO_SPEC1_STEP2:
+                    //lower arm
+                    clawClosed = true;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP2, 0.8, 0)){
+                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP3;
+                    }
+                    break;
+                case DRIVE_TO_SPEC1_STEP3:
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP3, 0.8, 0)){
+                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP4;
+                    }
+                    break;
+                case DRIVE_TO_SPEC1_STEP4:
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP4, 0.8, 0)){
+                        stateMachine = StateMachine.PRE_MOVE_TO_SPEC0;
                     }
                     break;
                 case PRE_MOVE_TO_SPEC0:
@@ -161,7 +179,7 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
                     shoulderCommand = 0;
                     clawClosed = false;
                     robotController.setArmMode(ArmMode.GRAB_SPECIMEN);
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_MOVE_SPEC0, 0.7, 0)){
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_MOVE_SPEC0, 0.8, 0)){
                         stateMachine = StateMachine.MOVE_TO_SPEC0;
                         runtime.reset();
                     }
@@ -171,7 +189,7 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
                     shoulderCommand = 0;
                     clawClosed = false;
                     robotController.setArmMode(ArmMode.GRAB_SPECIMEN);
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_GRAB_SPEC0, 0.45, 0.5)){
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_GRAB_SPEC0, 0.45, 0.25)){
                         stateMachine = StateMachine.CLOSE_CLAW_SPEC0;
                         runtime.reset();
                     }
@@ -198,20 +216,12 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
                     //raise the arm
                     shoulderCommand = 0;
                     clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_PRE_DELIVER0, 0.7, 0)){
-                        stateMachine = StateMachine.GO_TO_DELIVER_POS;
-                    }
-                    break;
-                case GO_TO_DELIVER_POS:
-                    //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), DELIVER_POS0, 0.7, 0)){
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_PRE_DELIVER0, 0.8, 0)){
                         stateMachine = StateMachine.DRIVE_TO_HIGH_SPECIMEN0;
                     }
                     break;
                 case DRIVE_TO_HIGH_SPECIMEN0:
-                    //raisin
+                    //raisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisin
                     shoulderCommand = 0;
                     clawClosed = true;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_HIGH_SPECIMEN0, 0.45, 0)){
@@ -234,40 +244,29 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
                     clawClosed = false;
                     robotController.updateDriveCommands(0, 0, 0, false);
                     if (runtime.seconds() >= 0.5) {
-                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP1;
+                        stateMachine = StateMachine.PRE_MOVE_TO_SPECA;
                         runtime.reset();
                     }
                     break;
-                case DRIVE_TO_SPEC1_STEP1:
-                    //raise the arm
+
+                case PRE_MOVE_TO_SPECA:
+                    //make the claw let go of the specimen
                     shoulderCommand = 0;
                     clawClosed = false;
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP1, 0.7, 0)){
-                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP2;
+                    robotController.setArmMode(ArmMode.GRAB_SPECIMEN);
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_MOVE_SPECA, 0.8, 0)){
+                        stateMachine = StateMachine.MOVE_TO_SPECA;
+                        runtime.reset();
                     }
                     break;
-                case DRIVE_TO_SPEC1_STEP2:
-                    //lower arm
-                    shoulderCommand = -1;
-                    linearSlideCmd = -1;
-                    clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP2, 0.7, 0)){
-                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP3;
-                    }
-                    break;
-                case DRIVE_TO_SPEC1_STEP3:
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP3, 0.7, 0)){
-                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP4;
-                    }
-                    break;
-                case DRIVE_TO_SPEC1_STEP4:
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC1_STEP4, 0.7, 0)){
-                        stateMachine = StateMachine.DRIVE_OUT_OF_OBSERVATION;
-                    }
-                    break;
-                case DRIVE_OUT_OF_OBSERVATION:
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_MOVE_SPECA, 0.7, 0)) {
+                case MOVE_TO_SPECA:
+                    //make the claw let go of the specimen
+                    shoulderCommand = 0;
+                    clawClosed = false;
+                    robotController.setArmMode(ArmMode.GRAB_SPECIMEN);
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_GRAB_SPECA, 0.45, 0.25)){
                         stateMachine = StateMachine.CLOSE_CLAW_SPECA;
+                        runtime.reset();
                     }
                     break;
                 case CLOSE_CLAW_SPECA:
@@ -285,27 +284,19 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
                     shoulderCommand = 0;
                     clawClosed = true;
                     if (runtime.seconds() >= 1.0){
-                        stateMachine = StateMachine.GO_TO_PRE_DELIVER_POS2;
+                        stateMachine = StateMachine.GO_TO_PRE_DELIVER_POSA;
                     }
                     break;
-                case GO_TO_PRE_DELIVER_POS2:
+                case GO_TO_PRE_DELIVER_POSA:
                     //raise the arm
                     shoulderCommand = 0;
                     clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_PRE_DELIVERA, 0.7, 0)){
-                        stateMachine = StateMachine.GO_TO_DELIVER_POS2;
-                    }
-                    break;
-                case GO_TO_DELIVER_POS2:
-                    //raise the arm
-                    shoulderCommand = 0;
-                    clawClosed = true;
-                    if (nav.driveTo(robotController.getOdometryPosition(), DELIVER_POSA, 0.7, 0)){
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_PRE_DELIVERA, 0.8, 0)){
                         stateMachine = StateMachine.DRIVE_TO_HIGH_SPECIMENA;
                     }
                     break;
                 case DRIVE_TO_HIGH_SPECIMENA:
-                    //raisin
+                    //raisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisinraisin
                     shoulderCommand = 0;
                     clawClosed = true;
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_HIGH_SPECIMENA, 0.45, 0)){
@@ -318,21 +309,20 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
                     shoulderCommand = -1;
                     clawClosed = true;
                     if (runtime.seconds() >= 0.5) {
-                        stateMachine = StateMachine.OPEN_CLAW02;
+                        stateMachine = StateMachine.OPEN_CLAWA;
                         runtime.reset();
                     }
                     break;
-                case OPEN_CLAW02:
+                case OPEN_CLAWA:
                     //make the claw let go of the specimen
                     shoulderCommand = 0;
                     clawClosed = false;
                     robotController.updateDriveCommands(0, 0, 0, false);
                     if (runtime.seconds() >= 0.5) {
-                        stateMachine = StateMachine.DRIVE_TO_SPEC1_STEP1;
+                        stateMachine = StateMachine.DRIVE_TO_SPEC2_STEP3;
                         runtime.reset();
                     }
                     break;
-
                 case DRIVE_TO_SPEC2_STEP1:
                     if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP1, 0.7, 0)){
                         stateMachine = StateMachine.DRIVE_TO_SPEC2_STEP2;
@@ -344,12 +334,9 @@ public class OdomAutoDeliver3Specimens extends LinearOpMode {
                     }
                     break;
                 case DRIVE_TO_SPEC2_STEP3:
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP3, 0.7, 0)){
-                        stateMachine = StateMachine.AT_TARGET;
-                    }
-                    break;
-                case GO_TO_OBSERVATION:
-                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_OBSERVATION, 0.7, 0)){
+                    shoulderCommand = -1;
+                    linearSlideCmd = -1;
+                    if (nav.driveTo(robotController.getOdometryPosition(), TARGET_SPEC2_STEP3, 0.8, 0)){
                         stateMachine = StateMachine.AT_TARGET;
                     }
                     break;

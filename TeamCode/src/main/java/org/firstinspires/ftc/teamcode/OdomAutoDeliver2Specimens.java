@@ -35,8 +35,6 @@ public class OdomAutoDeliver2Specimens extends LinearOpMode {
         DRIVE_TO_HIGH_SPECIMEN0,
         DELIVER_SPECIMEN0,
         OPEN_CLAW0,
-        TURN,
-        //MOVE_BACK_TO_START,
         DRIVE_TO_SPEC1_STEP1,
         DRIVE_TO_SPEC1_STEP2,
         DRIVE_TO_SPEC1_STEP3,
@@ -54,16 +52,16 @@ public class OdomAutoDeliver2Specimens extends LinearOpMode {
     static final Pose2D TARGET_OBSERVATION = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_MOVE_SPEC0 = new Pose2D(DistanceUnit.MM,300, -1000, AngleUnit.DEGREES, 175);
     static final Pose2D TARGET_GRAB_SPEC0 = new Pose2D(DistanceUnit.MM,166, -1000, AngleUnit.DEGREES, 175);
-    static final Pose2D TARGET_PRE_DELIVER0 = new Pose2D(DistanceUnit.MM,400, -30, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_HIGH_SPECIMEN0 = new Pose2D(DistanceUnit.MM,760,-30,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_PRE_DELIVER0 = new Pose2D(DistanceUnit.MM,400, -50, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_HIGH_SPECIMEN0 = new Pose2D(DistanceUnit.MM,760,-50,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_SPEC1_STEP1 = new Pose2D(DistanceUnit.MM,400, -950, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP2 = new Pose2D(DistanceUnit.MM,1300, -950, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP3 = new Pose2D(DistanceUnit.MM,1300, -1200, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC1_STEP4 = new Pose2D(DistanceUnit.MM,100, -1200, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC2_STEP1 = new Pose2D(DistanceUnit.MM,1300, -1200, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_SPEC2_STEP2 = new Pose2D(DistanceUnit.MM,1300, -1300, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_SPEC2_STEP3 = new Pose2D(DistanceUnit.MM,350, -1300, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_SPEC3_STEP1 = new Pose2D(DistanceUnit.MM,1300, -1300, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC2_STEP2 = new Pose2D(DistanceUnit.MM,1300, -1350, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC2_STEP3 = new Pose2D(DistanceUnit.MM,150, -1350, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_SPEC3_STEP1 = new Pose2D(DistanceUnit.MM,1300, -1350, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC3_STEP2 = new Pose2D(DistanceUnit.MM,1300, -1550, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_SPEC3_STEP3 = new Pose2D(DistanceUnit.MM,350, -1550, AngleUnit.DEGREES, 0);
 
