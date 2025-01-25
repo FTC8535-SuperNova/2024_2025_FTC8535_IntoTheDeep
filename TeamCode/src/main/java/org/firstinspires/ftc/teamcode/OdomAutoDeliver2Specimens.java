@@ -48,7 +48,7 @@ public class OdomAutoDeliver2Specimens extends LinearOpMode {
         DRIVE_TO_SPEC3_STEP3
     }
 
-    static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,750,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_HIGH_SPECIMEN = new Pose2D(DistanceUnit.MM,735,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_OBSERVATION = new Pose2D(DistanceUnit.MM,0, -1485, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_MOVE_SPEC0 = new Pose2D(DistanceUnit.MM,300, -1000, AngleUnit.DEGREES, 175);
     static final Pose2D TARGET_GRAB_SPEC0 = new Pose2D(DistanceUnit.MM,166, -1000, AngleUnit.DEGREES, 175);
